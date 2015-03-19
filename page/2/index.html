@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 2 頁 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-10T03:08:26.000Z"><a href="/Whatyouknowabout/ufldl-part1/">2014-12-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/ufldl-part1/">UFLDL教程总结(1) Autoencoder</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p><a href="http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial" target="_blank" rel="external">Unsupervised Feature Learning and Deep Learning tutorial</a>,作为深度学习的入门教程,是Andrew Ng机器学习公开课的后续.最近发现一学期要结束了,只完成了Ng的这两个教程.再悲剧点,这学期学的东西,大概这几篇博文就能说完了….</p>
+<p>整个教程的目的就是用无监督(数据无标签或者不用数据的标签)的方法从大量数据中学习数据本身的特征,然后加上机器学习的基本算法去分类数据.</p>
+<p>什么是特征(不是概念,而是指大家常用的用来表示原始数据的东西)?.对音频,特征一般就是这段音频的频谱,或者Mel频谱,或者MFCC,LPC什么的;对图像,就是图像里的纹理边角信息,比如SIFT什么的,或者其他图像的局部特征.这些特征被用作原始信号的抽象或者说精确或者说低维表达,作为机器学习算法的输入.</p>
+<p>这些特征光看名字就十分吓人了.他们是由speech community或者computer vision community里正儿八经的科学家们想出来的,这种特征叫做hand-engineered特征.前几十年的人工智能全靠使用这些复杂的特征的系统拼接起来来完成.比如语音识别系统,语音科学家们发现了MFCC这个特征不错,它和人的听觉系统有关,用它来做语音的低维表达效果更合理;然后工作交给了机器学习工作者,他们觉得GMM刚好可以作为复杂的语音的模型,又发现HMM刚好可以描述语音这个时间序列.用这些复杂的方法,再加上大量数据训练,HMM-GMM语音识别系统效果很好.这些系统性能的提高也全靠这些特征,通过不断改进特征(比如加上声带特征),性能确实提高了(因为特征更加合理了),但提高的效果并不显著.</p>
+<p>Ng说,以前的HMM已经很复杂了,而改进特征这种domain specific的东西不是一般人能做的,这导致了speech community和machine learning community的隔离,因为各自做的都太专业了.Ng的想法就是用machine learning的方法来提高以前语音识别系统的性能(当然,不只是语音方面),这就是他的UFLDL教程的意义.</p>
+<hr>
+<p>Sparse Autoencoder就是替代以前的hand-engineered特征,利用神经网络来自动学习特征的一种方法.具体已经在<a href="http://sinb.github.io/Whatyouknowabout/pca-sparseNN-rbm/" target="_blank" rel="external">上篇文章</a>里以及记录.而且这个东西..确实简单,效果又好.而且这个思想可以推广,06年Hinton的stacked RBM autoencoder就是把单层的神经网络换成RBM,又一个堆上一个,最后得到的一个自动编码器.<br>这种自动编码器效果好到什么程度呢?Hinton的学生Navdeep_Jaitly_14年的博士论文实验里提到,用autoencoder提取出来的语音特征很类似于ICA提取出的特征.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-23T06:14:20.000Z"><a href="/Whatyouknowabout/pca-sparseNN-rbm/">2014-11-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/pca-sparseNN-rbm/">PCA,SparseNN,DBN在MNIST上的对比</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;接上篇<a href="http://sinb.github.io/Whatyouknowabout/pca1/" target="_blank" rel="external">PCA介绍</a>,以及<a href="http://sinb.github.io/Whatyouknowabout/mnist/" target="_blank" rel="external">MNIST简介</a>.</p>
+<p>PCA,主成分分析,最简单的降维方法,寻找数据分布中方差(波动)最大的方向,进行投影.</p>
+<p>MNIST,手写数字数据库,0到9十个数字,60000张训练图片和10000张测试图片,每张图片是大小28*28的灰度图.</p>
+<p>这里用三种方法对MNIST手写数字数据进行降维,或者说特征提取.实际上MNIST数据本来是要用作数字分类的,但这里没有做这一步,只是为了对比三种方法对特征的提取能力.</p>
+<h2 id="PCA">PCA</h2><p>用PCA计算出28*28=784个特征向量,每个特征向量维度也是784.下面是前196个特征值最大的特征向量reshape成28*28的矩阵后,显示出来的东西.</p>
+<p><center><img src="/images/MNIST/pca_196.jpeg" width="350px"></center><br>可以看出前几个特征还有意义,它大致是各种数字融合起来的样子,可以用来表示数字的特征,特征值越小的向量,就越来越看不出特征了,每张都看着差不多,因为数据在这些方向上变化很小.</p>
+<h2 id="Sparse_neural_network">Sparse neural network</h2><p>这里用的这个神经网络作用是一个autoencoder,所以UFLDL教程上把它叫Sparse autoencoder.Autoencoder的作用就是对数据进行编码,auto是因为它的编码过程是自动的,编码过后又解码,期望得到的输出结果和输入结果几乎一样,就是autoencoder要完成的.下面左图就是这个autoencoder神经网络的结构,它的输入层和输出层神经元个数是一样的(忽略第一层那个+1神经元,它是作为偏置项or截距项,这里没用它).这个神经网络的结构是784-196-784.</p>
+<p>如果约束这个神经网络,使得隐藏层的每个神经元的平均激活度很小,意思就是输入一个图片只有几个隐藏层的神经元激活,那这个神经网络的功能就类似sparse coding,所以叫做sparse neural network.稀疏性具体能干啥我暂时也说不清楚,只知道这真正的神经信号传递就是这个样子的,只有少数的神经元激活,大部分都是抑制状态.<br><img src="/images/MNIST/auto.png" width="350px"> <img src="/images/MNIST/sparseNN_196.jpeg" width="350px"><br>右边就是经过训练后(使用反向传播算法计算误差函数关于各参数的导数,使用L-BFGS优化这些参数)的神经网络中,第一层与第二层之间的连接权重,reshape成的28*28的矩阵后的样子了.具体地,输入层有784个单元,隐藏层有196个,每个隐藏层单元都有784个输入层单元连接着它,把这784个连接权值reshape后显示出来.这些特征和PCA很相似,就像是各种图片的融合.</p>
+<h2 id="DBN">DBN</h2><p>Deep belief network,Hinton大牛在06年首次介绍它时,就把它当作了一个autoencoder,所以它在这里的功能其实和上边的sparse autoencoder一样.但是它的训练过程复杂的多.</p>
+<p>如下图,先看中间,中间图就表面了这个神经网络的功能是一个autoencoder,输入经过计算,再计算回去,期望得到一个和输入一样的结果.左边实际上是DBN的关键,它是这个神经网络为什么要叫Deep belief network的原因,因为它的每一层参数都是用一个Restricted Boltzmann Machine计算得来的,计算出每一层参数后,对称的将这些参数接在后面,就得到了autoencoder,然后又开始用BP计算误差导数,用优化算法(Hinton这个实验里用了conjugate gradient)寻找最合适的参数.</p>
+<p><center><img src="/images/MNIST/rbm_train.png" width="650px"></center><br></p>
+<p>Hinton在MNIST上用的神经网络结构为784-500-500-2000-10,最后一层10个神经元是用作分类.下图中,左边是前196个第二层神经元对应输入层的权值reshape后的图像,这里第二层是500个神经元,这500个特征的地位是相等的,不像PCA,所以应该看看500个全部的特征,如下右图.<br><img src="/images/MNIST/rbm_196.jpeg" width="350px">  <img src="/images/MNIST/rbm_500.jpeg" width="350px"> </p>
+<p>直觉上理解,相比sparse autoencoder,DBN提取出的特征更加精细,并且这只是第一层便于用图像观察的特征,后面的层还可以更进一步提取特征,就是我们不能看它们了.这些图片使用了imagesc函数显示,图中纯粹的黑色表示-1,中间色是0,纯白色是1.这样很明显就能看出特征的含义:</p>
+<ul>
+<li>1.特征具有稀疏性.因为从图上看大部分是灰色的,也就是接近0,这样给一个输入,由于连接权值大部分是0,中间层的激活度就很小.</li>
+<li>2.特征中黑色的权值对应这负数,会抑制神经元激活;白色对应正数,会促使神经元激活.</li>
+<li>3.特征中的白条纹对应着原始图片中的条纹.如何理解这个?想象随便有一个输入图片,连接图片的这个神经元连接权值(也就是特征)上有一个白条纹(看着上面的图脑补一下),也有黑的条纹,其它地方全是灰色(对应0).那这个神经元会不会激活呢?由于大部分都是灰色,连接权值是0,所以这些权值对应的输入对神经元是否激活没有作用,而黑色对应的输入图片中的位置,如果像素点值不为0,反而会抑制这个神经元.所以想要激活这个神经元,最好的输入图片是这样的:在权值为白色对应着的位置像素点有值,权值为黑色对应着的像素点灰度为0(灰度为0也就是背景,在MNIST中),这就是纹理信息了.其实上边的sparse autoencoder的特征也是这样解释的.这是UFLDL上给出的结论:<br><img src="/images/MNIST/formu1.png"><br>想要让这个神经元最大程度激活,针对这些训练好的权值(ie,训练好的特征),输入应该是什么样的?刚好就应该对应着这些特征,如上式.</li>
+</ul>
+<p>DBN进一步可以提取出更抽象的特征,这些特征的意义一定是更明确,更加底层的表示着输入,虽然不能看的见.</p>
+<p>参考:</p>
+<ul>
+<li><a href="http://ufldl.stanford.edu/wiki/index.php/Visualizing_a_Trained_Autoencoder" target="_blank" rel="external">http://ufldl.stanford.edu/wiki/index.php/Visualizing_a_Trained_Autoencoder</a></li>
+<li><a href="https://github.com/jatinshah/ufldl_tutorial" target="_blank" rel="external">https://github.com/jatinshah/ufldl_tutorial</a></li>
+<li><a href="https://github.com/danluu/UFLDL-tutorial" target="_blank" rel="external">https://github.com/danluu/UFLDL-tutorial</a></li>
+<li>www.cs.toronto.edu/~hinton/science.pdf</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-15T03:21:51.000Z"><a href="/Whatyouknowabout/pca1/">2014-11-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/pca1/">PCA是啥</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;PCA,Principal Component Analysis,主成分分析,是一种简单粗暴有效的数据降维方法.介绍它是因为觉得PCA的想法很有意思,得到的结果非常直观.06年Hinton的Deep Belief Networks就是和PCA的结果做了对比.下次把Hinton的DBN介绍下.</p>
+<p>PCA的目的就是数据降维,至于为什么降维,主要原因有这么几个:</p>
+<ul>
+<li>高维数据中有冗余信息.比如有两列数据,一个是用cm表示的身高,一个是用inch表示的身高,这两列明显相关,所以可以省去一列.</li>
+<li>高维数据有效的转为低维数据后,可以减少存储空间,提高算法的执行速度.</li>
+<li>维度越高的数据,在算法设计的时候就要针对这么高维的数据做出更多的假设条件,容易造成最终的训练结果过拟合.</li>
+<li>用于数据可视化.把高维数据降到二维或者三维就能比较直观的看出数据的分布或者样本之间的关系.  </li>
+</ul>
+<p>好了,先来最直观的2D降到1D.下面左图,是一堆二维数据,或者叫做二维特征,我们想用一维的特征来表示这些样本点,并且能够最大程度上保留以前这些样本的分布特点.以前的二维特征,看起来表示的意思就是这堆数据有的离的远,有的离的近,这很明显是可以降低到1D空间上的,做个投影就行了.比如下面右图,随便画一条线,每一个样本点在这条线上做投影,这样二维特征就全部降低到一维空间中了.<br><img src="/images/pca_1.png" width="350px"><img src="/images/pca_2.png" width="350px"><img src="/images/pca_3.png" width="350px"></p>
+<p>但是应该选怎样一个向量来做投影呢?如果选择上图中紫色的那条,可以是可以,但最后投影得到的点都挤在一起了,而红色那个向量做出的投影,各个样本点分散的很开.所以PCA的基本思想来了,就是首先计算样本点在哪个方向上变化波动最大,然后把数据投影到这些变化波动最大的方向上去.设我们要找的向量是\(\vec{u}\),限制\(\vec{u}\)为单位向量,一共有m个样本点,用数学表达式表述上面的思想就是$$max_{\vec{u}:||\vec{u}||=1} \frac{1}{m}\sum_i^m (x^{(i)T} \vec{u})^2$$</p>
+<p>$$max_{\vec{u}:||\vec{u}||=1}  \vec{u}^{T}  \frac{1}{m} \sum_i^m x^{(i)} x^{(i)T} \vec{u}\qquad(1) $$</p>
+<p>意思是所有样本的投影平方和最大,想想上面红色的线和紫色的线,那个对于所有样本的投影平方和比较大?明显是红色那条.写成这样之后,记\(\Sigma = \frac{1}{m} \sum_i^m x^{(i)} x^{(i)T}\),\(\Sigma\)实际上就是m个样本,每个样本维度是n,组成的n*m的矩阵X的协防差矩阵,大小是n*n.对(1)式,将限制条件\(\vec{u}:||\vec{u}=1||\)考虑,用拉格朗日方法求(1)右边部分最大值,就能发现\(\vec{u}\)就是\(\Sigma\)的特征值最大的特征向量.特征向量的方向就是我们要投影的方向.<br>证明是这样的:<br>$$goal: \qquad max: \vec{u}^{T}  \Sigma \vec{u} \qquad constrain: \vec{u}^{T} \vec{u}=1 $$<br>$$Lagrange\quad function:L(\lambda,\vec{u}) = \vec{u}^{T}  \Sigma \vec{u}  + \lambda(\vec{u}^{T} \vec{u}-1)$$<br>$$\frac{\partial L}{\partial \vec{u}} = \Sigma \vec{u} - \lambda \vec{u} = 0$$<br>写到这就能看出来了,\(\vec{u}\)就是\(\Sigma\)的特征向量,而且是特征值最大的那个.为啥是最大的那个?我们不是要让\(\vec{u}^{T}  \Sigma \vec{u}\)最大吗?\(\vec{u}^{T}  \Sigma \vec{u} = \vec{u}^{T}  \lambda \vec{u}\),当然\(\lambda\)越大越好.<br>于是PCA的使用就可以写成如下算法:</p>
+<ul>
+<li>1.对m个样本构建样本矩阵X</li>
+<li>2.计算X的协防差矩阵\(\Sigma\),以及\(\Sigma\)的特征向量和特征多项式.</li>
+<li>3.如果最后要得到的数据是k维的,就选择特征值按大小排序前k个特征值对应的特征向量,组成一个矩阵\(Urecude\),用这k个特征向量作为基底,将原来的n维数据投影到k维上.做法是 z = Ureduce * x,这就是在计算每一维的投影.\(z\)是k*1维.</li>
+</ul>
+<p>下面是coursera machine learning上使用PCA对人脸数据进行降维的例子.这是人脸数据库中的100张图片.</p>
+<center><img src="/images/face.png" width="350px"></center>
+
+<p>每个人脸有32*32=1024个像素点,每个点用一个灰度值来表示.所以这张人脸就可以看作是1024维空间中的一个向量.这个实验里提供了5000张图片,就是有5000个向量,我们希望找出个5000个向量所组成的数据,在哪些方向变化波动最大,然后把1024维向量投影到低维向量上去(实验中是100维).</p>
+<p>来看看特征值最大的36个特征向量是些什么东西.特征向量大小是1024*1,把它reshape成32*32,再显示出来就是这样了.这36个特征向量就相当于人脸的36个最重要的特征,不同人脸的差别就反映在这些差别上,所以这些也叫做特征脸(eigenface).</p>
+<center><img src="/images/face_2.png" width="350px"></center>
+
+<p>实验里选择了前100个特征向量作为特征脸,or基底,也就是说每个样本从1024维降到了100维.怎么知道PCA的效果到底怎么样呢?想想一直到这一步PCA所做的事情.PCA是非监督学习,它根据很多很多样本来得到样本在哪些方向上变化最大,得到了一个由许多特征向量组成的降维矩阵Ureduce,通过z=Ureduce*x来降维.那么要恢复数据就只需要执行\(x_{reconst} = Ureduce^{-1} * z\)就行了,不过由于当时我们推导的时候限制了\(\vec{u}:||\vec{u}||=1\),所以这样得到的Ureduce的逆(这里是一般形式的矩阵的逆,就是伪逆)和Ureduce的转置是一样的,只用用Ureduce的转置乘以降维后的特征z就能恢复出x,当然x是有损失的,可以看作是x的估计.</p>
+<p>这个损失有多大呢?看下最初的那些2D to 1D,再恢复到2D的例子,下图红色的点是恢复的点.</p>
+<center><img src="/images/face_4.png" width="350px"></center><br>可以看到,由于我们只用了一个特征向量,所以我们恢复的数据全部落在这个特征向量上,损失掉了另一个方向(另一个特征向量方向)的波动变化,但仍然很好的反映了原始数据的特点.<br><br>下面是用100维数据恢复得到的1024维数据的图片,可以看到一些损失但不大.<br><center><img src="/images/face_3.png" width="800px"></center>
+
+<p>下次补上牛逼哄哄的DBN,Hinton也是在这个人脸数据库上做的实验,看看DBN如何完虐PCA吧.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-14T05:11:03.000Z"><a href="/Life/20111112WeekEnd/">2014-11-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Life/20111112WeekEnd/">2011.11.12 Week End, A Tout le Monde</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><center><img src="/images/WeekEnd.jpg" width="450px"></center><br>原来已经过去3年了.真想再和你们一起喝酒排练.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-08T11:30:07.000Z"><a href="/Whatyouknowabout/normal-equation-ls/">2014-11-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/normal-equation-ls/">Normal equation和Least squares以及最小二乘法拟合圆</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.</p>
+<p>第一次碰到normal equation是Andrew Ng的ML公开课,讲线性回归的那章.第一种做法是写出误差函数<br>\[J(\theta) =\frac{1}{2m} \sum_{i=1}^m(h(x) - y)^2 \]<br>其中\(h(x)\)是关于\(\theta\)的函数.Ng说除了使用梯度下降法来得到一组\(\theta\)使得误差函数最小,还有一种矩阵分析的方法,不需要迭代直接可以算出满足条件的\(\theta\).<br>$$\theta = (X^T X)^{-1}X^T y$$<br>这个式子叫做Normal equation.X是所有样本的各个取值组成的矩阵,y是样本对应的目标值组成的向量.Ng没有在公开课上证明这个式子.</p>
+<p>第二次碰到是在Bengio的Deep learning里,还是在线性回归的例子里,他使用这个式子作为误差度量P</p>
+<p>$$MSE_{test} = \frac{1}{m} || \hat{y}^{(test)} - y^{(train)} ||^2 _2$$</p>
+<p>即mean squared error,然后对于\(MSE_{test}\)求关于参数w(这个w和上面的\(\theta\)一样)的偏导,便能推到出和Ng说的那个Normal equation.<br><img src="/images/eq1.jpeg" alt=""></p>
+<p>然后第三次碰到是上周的矩阵课,一个月没去了,去了意外发现原来这个Normal equation的出处在这里,它就是最小二乘问题…</p>
+<p>上面那个代价函数\(J(\theta)\)和误差函数\(MSE_{test}\),都是在解最小二乘问题.按书上:当线性方程组\(A\vec{x}= \vec{b}\)无解时,希望找到这样的向量\(\vec{x}_0\),使得\( ||A\vec{x}_0 - \vec{b}||_2 = min ||A\vec{x} - \vec{b}||_2\),这样的解\(\vec{x}_0\)叫矛盾方程组(因为它实际上是没有解的)\(A\vec{x}-\vec{b} = 0\)的最小二乘解.证明方法是直接对这个范式展开关于向量\(\vec{x}\)求导,得极值为0的向量便是所求,表达式就是上面那个Normal equation解.</p>
+<p>上面机器学习举例全是线性回归,但最小二乘能做的很多不只是拟合直线,它还能拟合非线性的函数,比如圆.如果我们要根据一些点来拟合出一个最合理的圆,最合理简单说就是希望这些点尽可能的在这个圆的周围.比如圆的方程是这样$$(x-a)^2 + (y-b)^2 = R^2$$<br>a,b,R是我们要找的圆心的横坐标纵坐标和半径,”最合理的圆”用数学表达式写出来就是这样$$argmin(a,b,R) \sum_{i=1}^m (x_i-\hat{a})^2 + (y_i -\hat{b})^2 - \hat{R}^2 $$ \((x_i,y_i)\)是所取的第i个点的坐标,这个式子和上面那两个线性回归问题的代价函数很像,实际上它就是一个最小二乘问题,要是给这个式子加个根号就和书上的最小二乘写成范数的定义一样了.现在想办法把这个式子展开写成\(A\vec{x}=\vec{b}\)的样子.<br>展开\((x-a)^2 + (y-b)^2 = R^2\)然后移项,可以拼出这样的式子<br>$$2x_i\hat{a} + 2y_i\hat{b} - (\hat{a}^2 + \hat{b}^2 - \hat{R}^2) = x_i^2 + y_i^2$$<br>令\(A= \left( \begin{array}{ccc}<br>2x_1 &amp; 2y_1 &amp; -1;\<br>… &amp; … &amp; …;\<br>2x_m &amp; 2y_m &amp; -1;\end{array} \right) \)大小是m*3维,m是取的点的个数,令\(\vec{x} =  \left( \begin{array}{ccc}<br>\hat{a} ; \hat{b} ; \hat{a}^2+\hat{b}^2-\hat{R}^2 \end{array} \right) \),大小是3*1;令\(b = \left( \begin{array}{ccc}<br>x_1^2+y_1^2;…;x_m^2+y_m^2 \end{array} \right)\),大小是m*1维,这样上面的”最合理的圆”就可以写成\(A*\vec{x} = \vec{b}\),\(\vec{x_0}\)就是我们要找的最小二乘解,它是圆方程的一组参数.</p>
+<p>matlab代码<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">xy_i = <span class="matrix">[<span class="number">8</span>,<span class="number">7</span>;<span class="number">4</span>,<span class="number">4</span>;<span class="number">5</span>,<span class="number">8</span>;<span class="number">1</span>,<span class="number">7</span>;<span class="number">9</span>,<span class="number">6</span>;<span class="number">3</span>,<span class="number">7</span>]</span>;<span class="comment">%随便找了6个点</span></span><br><span class="line">x_i = xy_i(:,<span class="number">1</span>);</span><br><span class="line">y_i = xy_i(:,<span class="number">2</span>);</span><br><span class="line">n = <span class="built_in">length</span>(xy_i);<span class="comment">%A维度应该是6*3</span></span><br><span class="line">A = <span class="matrix">[<span class="number">2</span>*x_i,<span class="number">2</span>*y_i,-<span class="number">1</span>*ones(n,<span class="number">1</span>)]</span></span><br><span class="line">b = <span class="matrix">[x_i.^<span class="number">2</span> + y_i.^<span class="number">2</span>]</span> <span class="comment">%b维度应该是6*1</span></span><br><span class="line">para = A \ b; <span class="comment">%para是圆方程的参数,这里直接用了除,写成normal equation是一样的</span></span><br><span class="line"><span class="comment">%para = pinv(A'*A)*A'*b;</span></span><br><span class="line">a = para(<span class="number">1</span>);b = para(<span class="number">2</span>);R = <span class="built_in">sqrt</span>(a^<span class="number">2</span>+b^<span class="number">2</span>-para(<span class="number">3</span>));</span><br><span class="line">plot(x_i,y_i,<span class="string">'r*'</span>)<span class="comment">%画点</span></span><br><span class="line">hold on</span><br><span class="line">alpha = <span class="number">0</span>:<span class="number">2</span>*<span class="built_in">pi</span>/<span class="number">200</span>:<span class="number">2</span>*<span class="built_in">pi</span>;<span class="comment">%画圆</span></span><br><span class="line">x = R*<span class="built_in">cos</span>(alpha) + a;</span><br><span class="line">y = R*<span class="built_in">sin</span>(alpha) + b;</span><br><span class="line">plot(x,y)</span><br><span class="line">axis equal</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/circlefit.jpg" alt=""><br>参考:<a href="http://www.math.niu.edu/~rusin/known-math/99/circlefit" target="_blank" rel="external">http://www.math.niu.edu/~rusin/known-math/99/circlefit</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-10-29T13:30:18.000Z"><a href="/Whatyouknowabout/fft-dft/">2014-10-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/fft-dft/">fft又忘了咋用了?</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>(fft就是比dft快点,所以在这就把fft和dft看做一个意思不区分了)</p>
+<p>首先,来生成一个离散正弦信号(其实这一步我也忘了咋用了!)</p>
+<p>第一种生成方法来自基本的正弦公式</p>
+<center>\(x = sin(\omega t) \) or \(x = sin(2\pi f t) \) 一个角频率一个频率.</center>
+
+<p>离散情况下,就要用到采样率fs来表示上面那个时间t.比如,要生成一个频率是110HZ的正弦波,首先需要知道要多少个点是吧?假设一共要生成N=1000个点.采样率的意思就是1秒钟有多少个点(或者说1秒钟对应到离散情况下为多少点).离散点坐标为n = [1, 2 ,…, N],转化成时间序列t = n / fs.如果fs = 1000的话,这个t刚好就是0到1秒(分成了1000份).</p>
+<p>然后就能按照上面的正弦信号公式来生成离散正弦信号了.</p>
+<center>\(x = sin(2\pi*f*n/fs)\)</center>
+
+<p>第二种生成方法直接写出来再解释.</p>
+<p>\(x = sin(2\pi*k*n/N)\)</p>
+<p>还是假设要生成N = 1000个点,n和上边一样是[1, 2, …, N],这样式子里的\( 2\pi*n/N \)刚好就是从0到\(2\pi\).然后k很明显代表的就是频率了..如果k = 110, 那么\( 2\pi*k*n/N \)就取了110个 \(2\pi\),即110个周期,所以它的频率就是110HZ.这种生成方法没有提到采样率fs.</p>
+<p>进行fft时,一定要记着把结果对应到正确的频率上.</p>
+<p>用上面生成的x,直接做fft<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">N = <span class="number">1000</span></span><br><span class="line">f = <span class="number">110</span></span><br><span class="line">fs = <span class="number">1000</span></span><br><span class="line">x = numpy.<span class="function"><span class="title">sin</span><span class="params">(<span class="number">2</span>*numpy.pi*f*numpy.arange(N)</span></span>/fs)</span><br><span class="line">X = numpy<span class="class">.fft</span><span class="class">.fft</span>(x)</span><br><span class="line">magX = numpy.<span class="function"><span class="title">abs</span><span class="params">(X)</span></span></span><br><span class="line">plt.<span class="function"><span class="title">plot</span><span class="params">(magX[:N/<span class="number">2</span>])</span></span> #只取正频率</span><br><span class="line">plt.<span class="function"><span class="title">show</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这样是对所有的x(1000个点)做了fft,得到的频谱幅度值magX频率是正确的.在110HZ上有个脉冲.<br><a href="" target="_blank"><img src="/images/fft1.jpeg" height="50/"></a></p>
+<p>但是我们并不想对所有的x做fft,比如只取256个点,按理说得到的结果应该一样的,因为都是正弦信号,取哪部分计算频率都是一样的.<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">N = <span class="number">256</span></span><br><span class="line">f = <span class="number">110</span></span><br><span class="line">fs = <span class="number">1000</span></span><br><span class="line">x = numpy.<span class="function"><span class="title">sin</span><span class="params">(<span class="number">2</span>*numpy.pi*f*numpy.arange(N)</span></span>/fs)</span><br><span class="line">X = numpy<span class="class">.fft</span><span class="class">.fft</span>(x)</span><br><span class="line">magX = numpy.<span class="function"><span class="title">abs</span><span class="params">(X)</span></span></span><br><span class="line">plt.<span class="function"><span class="title">plot</span><span class="params">(magX)</span></span>[:N/<span class="number">2</span>]</span><br><span class="line">plt.<span class="function"><span class="title">show</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure></p>
+<p><a href="" target="_blank"><img src="/images/fft2.jpeg" height="50/"></a><br>但是这样脉冲就不再110HZ上了..这时有还有一步,要给横轴频率乘上频率解析度 fs / N.<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">X = numpy.fft.fft(x)</span><br><span class="line">magX = numpy.<span class="literal">abs</span>(X)</span><br><span class="line">f_sequence = numpy.arange(X.size/2) * fs / <span class="keyword">N</span></span><br><span class="line">plt.<span class="keyword">plot</span>(magX[:<span class="keyword">N</span>/2])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>结果就对了.<br><a href="" target="_blank"><img src="/images/fft3.jpeg" height="50/"></a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-10-10T11:42:25.000Z"><a href="/Artworks/lines/">2014-10-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Artworks/lines/">线</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>啥都看不见请换火狐.</p>
+<center><canvas data-processing-sources="/processingcode/colorPointsAndLines.pde"></canvas></center><br><center>操作:用鼠标点</center>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-09-29T02:57:41.000Z"><a href="/Whatyouknowabout/mnist/">2014-09-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/mnist/">MNIST数据库格式及简介</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>最近要用到这个手写数字数据库,写个文档给用的着的人.</p>
+<p>MNIST database,一个手写数字的图片数据库,每一张图片都是0到9中的单个数字,比如下面几个:</p>
+<center><img src="/images/mnist_2" alt=""> <img src="/images/mnist_4" alt=""> <img src="/images/mnist_8" alt=""> <img src="/images/mnist_9" alt=""> <img src="/images/mnist_5" alt=""><br></center>
+
+<p>每一张都是抗锯齿(Anti-aliasing)的灰度图,图片大小28*28像素,数字部分被归一化为20*20大小,位于图片的中间位置,保持了原来形状的比例.</p>
+<h3 id="数据分布">数据分布</h3><p>MNIST数据库的来源是两个数据库的混合,一个来自Census Bureau employees(SD-3),一个来自high-school students(SD-1);有训练样本60000个,测试样本10000个.训练样本和测试样本中,employee和student写的都是各占一半.60000个训练样本一共大概250个人写的.训练样本和测试样本的来源人群没有交集.</p>
+<p>MNIST数据库也保留了手写数字与身份的对应关系.</p>
+<h3 id="数据格式">数据格式</h3><p>在这里下载<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="external">http://yann.lecun.com/exdb/mnist/</a></p>
+<p>包含4个文件</p>
+<p><center>train-images-idx3-ubyte: training set images<br>train-labels-idx1-ubyte: training set labels<br>t10k-images-idx3-ubyte:  test set images<br>t10k-labels-idx1-ubyte:  test set labels</center></p>
+<p>分别是图片文件和标签文件,存储格式是MSB在前(high endian),这里提供一个matlab文件(Hinton大牛的)来将MNIST database转成matlab的数据格式.<br><a href="/othercode/convert.m">convert.m</a></p>
+<p>转换完之后,训练数据会保存为digit0.mat至digit9.mat十个文件,测试数据保存为test0.mat到test9.mat.比如digit0.mat,格式为5923*784,就是说训练数据里有5923个0的手写数字,784是因为将28*28写成了一行,reshape一下就可以变成原来的样子.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-09-22T06:36:41.000Z"><a href="/Artworks/lissajous1/">2014-09-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Artworks/lissajous1/">基本的lissajous图形</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>啥都看不见请换火狐.文章点进去显示的可能会快一点.</p>
+<center><canvas data-processing-sources="/processingcode/lissajous1.pde"></canvas></center><br><center>操作:(先鼠标点一下图片)<br>q增加x方向振幅,w减小x方向振幅<br>e增加x方向频率,r减小x方向频率<br>t增加y方向频率,y减小y方向频率<br>u增加y方向相位<br>9重置,0清屏</center>
+
+<p>lissajous图形是由两个方向垂直的正弦运动共同作用产生的.比如这个图,它的x,y方向运动方程是<br>$$x = A_1 sin(\omega_1 t)\\<br>y = A_2 sin(\omega_2 t + \theta)$$</p>
+<p>改变\( \theta \)可以产生很多漂亮的图形,我Processing太烂暂时没做出来…以后补.</p>
+<figure class="highlight"><figcaption><span>[lissajous1.pde][http://www.openprocessing.org/sketch/162070]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float nx = 1, ny = 1, theta_x = 0, theta_y = 12;&#10;float Ax = 100, Ay = 100;&#10;float x;&#10;float p_x;&#10;float p_y;&#10;void setup()&#123;&#10;  size(400, 400);&#10;  background(255);&#10;  noFill();&#10;  frameRate(100);&#10;  x = 0;&#10;  smooth();&#10;&#125;&#10;&#10;void draw()&#123;&#10;  //horithon&#10;  x += 1;&#10;  p_x = sin(radians(nx * x) + theta_x) * Ax + height / 2;&#10;  //vertical&#10;  p_y = sin(radians(ny * x) + theta_y) * Ay + height / 2;&#10;  //draw&#10;  point(p_x, p_y);&#10;  //update&#10;  theta_y += 0.01;&#10;&#125;&#10;void keyPressed()&#123;&#10;  if( key == &#39;q&#39; || key == &#39;Q&#39; ) &#123;&#10;    Ax += 2;&#10;  &#125;&#10;  else if( key == &#39;w&#39; || key == &#39;W&#39; )&#123;&#10;    Ax -= 2;&#10;  &#125;&#10;  else if( key == &#39;e&#39; || key == &#39;E&#39; )&#123;&#10;    nx += .01;&#10;  &#125;&#10;  else if( key == &#39;r&#39; || key == &#39;R&#39; )&#123;&#10;    nx -= .01;&#10;  &#125; &#10;  else if( key == &#39;t&#39; || key == &#39;T&#39; )&#123;&#10;    ny += .01;&#10;  &#125;&#10;  else if( key == &#39;y&#39; || key == &#39;Y&#39; )&#123;&#10;    ny -= .01;&#10;  &#125;&#10;  else if( key == &#39;u&#39; || key == &#39;U&#39; )&#123;&#10;    theta_y++;&#10;  &#125;&#10;  else if( key == &#39;9&#39;)&#123;&#10;    nx = 1;&#10;    ny = 1;&#10;    Ax = 100;&#10;    Ay = 100;&#10;    theta_y = 2;&#10;    background(255);&#10;  &#125; &#10;  else if( key == &#39;0&#39;)&#123;&#10;    background(255);&#10;  &#125;      &#10;&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-09-20T01:59:25.000Z"><a href="/Artworks/processingtest/">2014-09-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Artworks/processingtest/">Processing测试</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>长按鼠标.啥都看不见请换火狐</p>
+<p><script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js"></script> </p>
+<center><canvas data-processing-sources="/processingcode/anything.pde"></canvas></center>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/" class="alignleft prev">上一頁</a>
+  
+  
+    <a href="/page/3/" class="alignright next">下一頁</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>4</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>13</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

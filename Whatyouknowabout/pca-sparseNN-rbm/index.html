@@ -1,0 +1,244 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>PCA,SparseNN,DBN在MNIST上的对比 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;接上篇PCA介绍,以及MNIST简介.
+PCA,主成分分析,最简单的降维方法,寻找数据分布中方差(波动)最大的方向,进行投影.
+MNIST,手写数字数据库,0到9十个数字,60000张训练图片和10000张测试图片,">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="PCA,SparseNN,DBN在MNIST上的对比"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-23T06:14:20.000Z"><a href="/Whatyouknowabout/pca-sparseNN-rbm/">2014-11-23</a></time>
+      
+      
+  
+    <h1 class="title">PCA,SparseNN,DBN在MNIST上的对比</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;接上篇<a href="http://sinb.github.io/Whatyouknowabout/pca1/" target="_blank" rel="external">PCA介绍</a>,以及<a href="http://sinb.github.io/Whatyouknowabout/mnist/" target="_blank" rel="external">MNIST简介</a>.</p>
+<p>PCA,主成分分析,最简单的降维方法,寻找数据分布中方差(波动)最大的方向,进行投影.</p>
+<p>MNIST,手写数字数据库,0到9十个数字,60000张训练图片和10000张测试图片,每张图片是大小28*28的灰度图.</p>
+<p>这里用三种方法对MNIST手写数字数据进行降维,或者说特征提取.实际上MNIST数据本来是要用作数字分类的,但这里没有做这一步,只是为了对比三种方法对特征的提取能力.</p>
+<h2 id="PCA">PCA</h2><p>用PCA计算出28*28=784个特征向量,每个特征向量维度也是784.下面是前196个特征值最大的特征向量reshape成28*28的矩阵后,显示出来的东西.</p>
+<p><center><img src="/images/MNIST/pca_196.jpeg" width="350px"></center><br>可以看出前几个特征还有意义,它大致是各种数字融合起来的样子,可以用来表示数字的特征,特征值越小的向量,就越来越看不出特征了,每张都看着差不多,因为数据在这些方向上变化很小.</p>
+<h2 id="Sparse_neural_network">Sparse neural network</h2><p>这里用的这个神经网络作用是一个autoencoder,所以UFLDL教程上把它叫Sparse autoencoder.Autoencoder的作用就是对数据进行编码,auto是因为它的编码过程是自动的,编码过后又解码,期望得到的输出结果和输入结果几乎一样,就是autoencoder要完成的.下面左图就是这个autoencoder神经网络的结构,它的输入层和输出层神经元个数是一样的(忽略第一层那个+1神经元,它是作为偏置项or截距项,这里没用它).这个神经网络的结构是784-196-784.</p>
+<p>如果约束这个神经网络,使得隐藏层的每个神经元的平均激活度很小,意思就是输入一个图片只有几个隐藏层的神经元激活,那这个神经网络的功能就类似sparse coding,所以叫做sparse neural network.稀疏性具体能干啥我暂时也说不清楚,只知道这真正的神经信号传递就是这个样子的,只有少数的神经元激活,大部分都是抑制状态.<br><img src="/images/MNIST/auto.png" width="350px"> <img src="/images/MNIST/sparseNN_196.jpeg" width="350px"><br>右边就是经过训练后(使用反向传播算法计算误差函数关于各参数的导数,使用L-BFGS优化这些参数)的神经网络中,第一层与第二层之间的连接权重,reshape成的28*28的矩阵后的样子了.具体地,输入层有784个单元,隐藏层有196个,每个隐藏层单元都有784个输入层单元连接着它,把这784个连接权值reshape后显示出来.这些特征和PCA很相似,就像是各种图片的融合.</p>
+<h2 id="DBN">DBN</h2><p>Deep belief network,Hinton大牛在06年首次介绍它时,就把它当作了一个autoencoder,所以它在这里的功能其实和上边的sparse autoencoder一样.但是它的训练过程复杂的多.</p>
+<p>如下图,先看中间,中间图就表面了这个神经网络的功能是一个autoencoder,输入经过计算,再计算回去,期望得到一个和输入一样的结果.左边实际上是DBN的关键,它是这个神经网络为什么要叫Deep belief network的原因,因为它的每一层参数都是用一个Restricted Boltzmann Machine计算得来的,计算出每一层参数后,对称的将这些参数接在后面,就得到了autoencoder,然后又开始用BP计算误差导数,用优化算法(Hinton这个实验里用了conjugate gradient)寻找最合适的参数.</p>
+<p><center><img src="/images/MNIST/rbm_train.png" width="650px"></center><br></p>
+<p>Hinton在MNIST上用的神经网络结构为784-500-500-2000-10,最后一层10个神经元是用作分类.下图中,左边是前196个第二层神经元对应输入层的权值reshape后的图像,这里第二层是500个神经元,这500个特征的地位是相等的,不像PCA,所以应该看看500个全部的特征,如下右图.<br><img src="/images/MNIST/rbm_196.jpeg" width="350px">  <img src="/images/MNIST/rbm_500.jpeg" width="350px"> </p>
+<p>直觉上理解,相比sparse autoencoder,DBN提取出的特征更加精细,并且这只是第一层便于用图像观察的特征,后面的层还可以更进一步提取特征,就是我们不能看它们了.这些图片使用了imagesc函数显示,图中纯粹的黑色表示-1,中间色是0,纯白色是1.这样很明显就能看出特征的含义:</p>
+<ul>
+<li>1.特征具有稀疏性.因为从图上看大部分是灰色的,也就是接近0,这样给一个输入,由于连接权值大部分是0,中间层的激活度就很小.</li>
+<li>2.特征中黑色的权值对应这负数,会抑制神经元激活;白色对应正数,会促使神经元激活.</li>
+<li>3.特征中的白条纹对应着原始图片中的条纹.如何理解这个?想象随便有一个输入图片,连接图片的这个神经元连接权值(也就是特征)上有一个白条纹(看着上面的图脑补一下),也有黑的条纹,其它地方全是灰色(对应0).那这个神经元会不会激活呢?由于大部分都是灰色,连接权值是0,所以这些权值对应的输入对神经元是否激活没有作用,而黑色对应的输入图片中的位置,如果像素点值不为0,反而会抑制这个神经元.所以想要激活这个神经元,最好的输入图片是这样的:在权值为白色对应着的位置像素点有值,权值为黑色对应着的像素点灰度为0(灰度为0也就是背景,在MNIST中),这就是纹理信息了.其实上边的sparse autoencoder的特征也是这样解释的.这是UFLDL上给出的结论:<br><img src="/images/MNIST/formu1.png"><br>想要让这个神经元最大程度激活,针对这些训练好的权值(ie,训练好的特征),输入应该是什么样的?刚好就应该对应着这些特征,如上式.</li>
+</ul>
+<p>DBN进一步可以提取出更抽象的特征,这些特征的意义一定是更明确,更加底层的表示着输入,虽然不能看的见.</p>
+<p>参考:</p>
+<ul>
+<li><a href="http://ufldl.stanford.edu/wiki/index.php/Visualizing_a_Trained_Autoencoder" target="_blank" rel="external">http://ufldl.stanford.edu/wiki/index.php/Visualizing_a_Trained_Autoencoder</a></li>
+<li><a href="https://github.com/jatinshah/ufldl_tutorial" target="_blank" rel="external">https://github.com/jatinshah/ufldl_tutorial</a></li>
+<li><a href="https://github.com/danluu/UFLDL-tutorial" target="_blank" rel="external">https://github.com/danluu/UFLDL-tutorial</a></li>
+<li>www.cs.toronto.edu/~hinton/science.pdf</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Whatyouknowabout/">Whatyouknowabout</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/DBN/">DBN</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>4</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>13</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

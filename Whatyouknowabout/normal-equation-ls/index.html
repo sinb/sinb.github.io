@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Normal equation和Least squares以及最小二乘法拟合圆 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.
+第一次碰到normal equation是Andrew Ng的ML公开课,讲线性回归的那章.第一种做法是写出误差函数\[J(\theta) =\frac{1}{2m} \sum_{">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Normal equation和Least squares以及最小二乘法拟合圆"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-08T11:30:07.000Z"><a href="/Whatyouknowabout/normal-equation-ls/">2014-11-08</a></time>
+      
+      
+  
+    <h1 class="title">Normal equation和Least squares以及最小二乘法拟合圆</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.</p>
+<p>第一次碰到normal equation是Andrew Ng的ML公开课,讲线性回归的那章.第一种做法是写出误差函数<br>\[J(\theta) =\frac{1}{2m} \sum_{i=1}^m(h(x) - y)^2 \]<br>其中\(h(x)\)是关于\(\theta\)的函数.Ng说除了使用梯度下降法来得到一组\(\theta\)使得误差函数最小,还有一种矩阵分析的方法,不需要迭代直接可以算出满足条件的\(\theta\).<br>$$\theta = (X^T X)^{-1}X^T y$$<br>这个式子叫做Normal equation.X是所有样本的各个取值组成的矩阵,y是样本对应的目标值组成的向量.Ng没有在公开课上证明这个式子.</p>
+<p>第二次碰到是在Bengio的Deep learning里,还是在线性回归的例子里,他使用这个式子作为误差度量P</p>
+<p>$$MSE_{test} = \frac{1}{m} || \hat{y}^{(test)} - y^{(train)} ||^2 _2$$</p>
+<p>即mean squared error,然后对于\(MSE_{test}\)求关于参数w(这个w和上面的\(\theta\)一样)的偏导,便能推到出和Ng说的那个Normal equation.<br><img src="/images/eq1.jpeg" alt=""></p>
+<p>然后第三次碰到是上周的矩阵课,一个月没去了,去了意外发现原来这个Normal equation的出处在这里,它就是最小二乘问题…</p>
+<p>上面那个代价函数\(J(\theta)\)和误差函数\(MSE_{test}\),都是在解最小二乘问题.按书上:当线性方程组\(A\vec{x}= \vec{b}\)无解时,希望找到这样的向量\(\vec{x}_0\),使得\( ||A\vec{x}_0 - \vec{b}||_2 = min ||A\vec{x} - \vec{b}||_2\),这样的解\(\vec{x}_0\)叫矛盾方程组(因为它实际上是没有解的)\(A\vec{x}-\vec{b} = 0\)的最小二乘解.证明方法是直接对这个范式展开关于向量\(\vec{x}\)求导,得极值为0的向量便是所求,表达式就是上面那个Normal equation解.</p>
+<p>上面机器学习举例全是线性回归,但最小二乘能做的很多不只是拟合直线,它还能拟合非线性的函数,比如圆.如果我们要根据一些点来拟合出一个最合理的圆,最合理简单说就是希望这些点尽可能的在这个圆的周围.比如圆的方程是这样$$(x-a)^2 + (y-b)^2 = R^2$$<br>a,b,R是我们要找的圆心的横坐标纵坐标和半径,”最合理的圆”用数学表达式写出来就是这样$$argmin(a,b,R) \sum_{i=1}^m (x_i-\hat{a})^2 + (y_i -\hat{b})^2 - \hat{R}^2 $$ \((x_i,y_i)\)是所取的第i个点的坐标,这个式子和上面那两个线性回归问题的代价函数很像,实际上它就是一个最小二乘问题,要是给这个式子加个根号就和书上的最小二乘写成范数的定义一样了.现在想办法把这个式子展开写成\(A\vec{x}=\vec{b}\)的样子.<br>展开\((x-a)^2 + (y-b)^2 = R^2\)然后移项,可以拼出这样的式子<br>$$2x_i\hat{a} + 2y_i\hat{b} - (\hat{a}^2 + \hat{b}^2 - \hat{R}^2) = x_i^2 + y_i^2$$<br>令\(A= \left( \begin{array}{ccc}<br>2x_1 &amp; 2y_1 &amp; -1;\<br>… &amp; … &amp; …;\<br>2x_m &amp; 2y_m &amp; -1;\end{array} \right) \)大小是m*3维,m是取的点的个数,令\(\vec{x} =  \left( \begin{array}{ccc}<br>\hat{a} ; \hat{b} ; \hat{a}^2+\hat{b}^2-\hat{R}^2 \end{array} \right) \),大小是3*1;令\(b = \left( \begin{array}{ccc}<br>x_1^2+y_1^2;…;x_m^2+y_m^2 \end{array} \right)\),大小是m*1维,这样上面的”最合理的圆”就可以写成\(A*\vec{x} = \vec{b}\),\(\vec{x_0}\)就是我们要找的最小二乘解,它是圆方程的一组参数.</p>
+<p>matlab代码<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">xy_i = <span class="matrix">[<span class="number">8</span>,<span class="number">7</span>;<span class="number">4</span>,<span class="number">4</span>;<span class="number">5</span>,<span class="number">8</span>;<span class="number">1</span>,<span class="number">7</span>;<span class="number">9</span>,<span class="number">6</span>;<span class="number">3</span>,<span class="number">7</span>]</span>;<span class="comment">%随便找了6个点</span></span><br><span class="line">x_i = xy_i(:,<span class="number">1</span>);</span><br><span class="line">y_i = xy_i(:,<span class="number">2</span>);</span><br><span class="line">n = <span class="built_in">length</span>(xy_i);<span class="comment">%A维度应该是6*3</span></span><br><span class="line">A = <span class="matrix">[<span class="number">2</span>*x_i,<span class="number">2</span>*y_i,-<span class="number">1</span>*ones(n,<span class="number">1</span>)]</span></span><br><span class="line">b = <span class="matrix">[x_i.^<span class="number">2</span> + y_i.^<span class="number">2</span>]</span> <span class="comment">%b维度应该是6*1</span></span><br><span class="line">para = A \ b; <span class="comment">%para是圆方程的参数,这里直接用了除,写成normal equation是一样的</span></span><br><span class="line"><span class="comment">%para = pinv(A'*A)*A'*b;</span></span><br><span class="line">a = para(<span class="number">1</span>);b = para(<span class="number">2</span>);R = <span class="built_in">sqrt</span>(a^<span class="number">2</span>+b^<span class="number">2</span>-para(<span class="number">3</span>));</span><br><span class="line">plot(x_i,y_i,<span class="string">'r*'</span>)<span class="comment">%画点</span></span><br><span class="line">hold on</span><br><span class="line">alpha = <span class="number">0</span>:<span class="number">2</span>*<span class="built_in">pi</span>/<span class="number">200</span>:<span class="number">2</span>*<span class="built_in">pi</span>;<span class="comment">%画圆</span></span><br><span class="line">x = R*<span class="built_in">cos</span>(alpha) + a;</span><br><span class="line">y = R*<span class="built_in">sin</span>(alpha) + b;</span><br><span class="line">plot(x,y)</span><br><span class="line">axis equal</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/circlefit.jpg" alt=""><br>参考:<a href="http://www.math.niu.edu/~rusin/known-math/99/circlefit" target="_blank" rel="external">http://www.math.niu.edu/~rusin/known-math/99/circlefit</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Whatyouknowabout/">Whatyouknowabout</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/最小二乘/">最小二乘</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>4</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>13</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
