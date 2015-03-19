@@ -6,7 +6,7 @@
   <title>UFLDL教程总结(6) linear decoder 线性解码 | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.因为MNIST的每个数据点就是在[0,1]之间的,所以这样合理.但有时候我们的输入不是[0,1]之间,比如我们用了白化后的结果,我们就希望输出不要限制在[0,1]之间,最简单的方法就是把随后一层的sigmoid函数去掉,直接把线">
+  <meta name="description" content="之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -85,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.因为MNIST的每个数据点就是在[0,1]之间的,所以这样合理.但有时候我们的输入不是[0,1]之间,比如我们用了白化后的结果,我们就希望输出不要限制在[0,1]之间,最简单的方法就是把随后一层的sigmoid函数去掉,直接把线性组合的结果输出.这样做最后一层的误差就变了(变简单了),但中间的什么都没变.</p>
+        <p>之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.<br><a id="more"></a><br>因为MNIST的每个数据点就是在[0,1]之间的,所以这样合理.但有时候我们的输入不是[0,1]之间,比如我们用了白化后的结果,我们就希望输出不要限制在[0,1]之间,最简单的方法就是把随后一层的sigmoid函数去掉,直接把线性组合的结果输出.这样做最后一层的误差就变了(变简单了),但中间的什么都没变.</p>
 <h1 id="实验">实验</h1><p>这个实验终于开始用RGB图了.数据集来自STL-10.首先从STL-10这个数据集中随机找了100k个8*8的小图片,用这些小图片训练autoencoder,期望提取出这些小图片的特征.由于是RGB图,有3个通道,所以输入是8*8*3=192的向量.这个autoencoder的最后一层的sigmoid函数去掉了,直接输出.实验在这就完了,已经由这100k个小图片训练出了小图片的特征.</p>
 
       
@@ -150,7 +149,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -171,7 +170,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

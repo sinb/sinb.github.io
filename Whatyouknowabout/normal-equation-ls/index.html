@@ -6,8 +6,7 @@
   <title>Normal equation和Least squares以及最小二乘法拟合圆 | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.
-第一次碰到normal equation是Andrew Ng的ML公开课,讲线性回归的那章.第一种做法是写出误差函数\[J(\theta) =\frac{1}{2m} \sum_{">
+  <meta name="description" content="最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -86,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.</p>
+        <p>最近一个月三次碰到normal equation,本来不打算管这个了应为梯度下降就能解决同样的问题,但还是总结一下吧.<br><a id="more"></a></p>
 <p>第一次碰到normal equation是Andrew Ng的ML公开课,讲线性回归的那章.第一种做法是写出误差函数<br>\[J(\theta) =\frac{1}{2m} \sum_{i=1}^m(h(x) - y)^2 \]<br>其中\(h(x)\)是关于\(\theta\)的函数.Ng说除了使用梯度下降法来得到一组\(\theta\)使得误差函数最小,还有一种矩阵分析的方法,不需要迭代直接可以算出满足条件的\(\theta\).<br>$$\theta = (X^T X)^{-1}X^T y$$<br>这个式子叫做Normal equation.X是所有样本的各个取值组成的矩阵,y是样本对应的目标值组成的向量.Ng没有在公开课上证明这个式子.</p>
 <p>第二次碰到是在Bengio的Deep learning里,还是在线性回归的例子里,他使用这个式子作为误差度量P</p>
 <p>$$MSE_{test} = \frac{1}{m} || \hat{y}^{(test)} - y^{(train)} ||^2 _2$$</p>
@@ -159,7 +157,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -180,7 +178,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

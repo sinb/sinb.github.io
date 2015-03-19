@@ -6,8 +6,7 @@
   <title>UFLDL教程总结(4) Self-Taught learning | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.
-自学特征这是一个Autoencoder:训练好Autoencoder后,我们去掉这个网络的最后一层,那么第二层神经元的激活就成了特征,如下图.这些特征可以替代我们以前的样本,也可以与以前的样本联合起来.前者">
+  <meta name="description" content="自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -86,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.</p>
+        <p>自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.<br><a id="more"></a></p>
 <h1 id="自学特征">自学特征</h1><p>这是一个Autoencoder:<br><img src="/images/stl_1.png" alt=""><br>训练好Autoencoder后,我们去掉这个网络的最后一层,那么第二层神经元的激活就成了特征,如下图.这些特征可以替代我们以前的样本,也可以与以前的样本联合起来.前者叫<strong>replace</strong>,即把\(\textstyle { (x_l^{(1)}, y^{(1)}), (x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) }\)换成\( \textstyle { (a_l^{(1)}, y^{(1)}), (a_l^{(2)}, y^{(2)}), \ldots (a_l^{(m_l)}, y^{(m_l)}) }\);后者叫<strong>concatenate</strong>,即\( \textstyle { ((x_l^{(1)}, a_l^{(1)}), y^{(1)}), ((x_l^{(2)}, a_l^{(1)}), y^{(2)}), \ldots, ((x_l^{(m_l)}, a_l^{(1)}), y^{(m_l)}) }\).<br><img src="/images/stl_2.png" alt=""></p>
 <h1 id="数据预处理时要记着的东西">数据预处理时要记着的东西</h1><p>之前我们对数据进行PCA或者ZCA白化处理时,用到了样本的均值和,还有计算出的特征向量组成的矩阵U,这些参数应该保存下来.当对这个训练好的模型输入新的数据做判断时,应该用这些参数对这个新数据做同样的处理.</p>
 <h1 id="实验">实验</h1><p>这个实验还是在MNIST上,用标签为5-9的数据来当作无标签数据,训练了一个autoencoder,再使用标签为0-4的数据作为输入,加上一个softmax分类器,用监督的方法来训练这个分类器,实现0-4这5类数字的判别.</p>
@@ -153,7 +151,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -174,7 +172,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

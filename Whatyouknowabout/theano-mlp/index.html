@@ -6,7 +6,7 @@
   <title>用Theano做一个MLP | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="前几天看Deep learning上的Theano教程,看到shared variable就不明白说的啥,暂时放弃.今天发现了网站上还有一个简化版教程用theano写了一个MLP(multi-layer perceptron),这个好懂多了,所以做个介绍.教程实现的就是一个单隐层的神经网络,也就是一">
+  <meta name="description" content="前几天看Deep learning上的Theano教程,看到shared variable就不明白说的啥,暂时放弃.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -85,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>前几天看<a href="http://deeplearning.net/" target="_blank" rel="external">Deep learning</a>上的<a href="http://deeplearning.net/software/theano/tutorial/" target="_blank" rel="external">Theano教程</a>,看到shared variable就不明白说的啥,暂时放弃.今天发现了网站上还有一个<a href="http://nbviewer.ipython.org/github/craffel/theano-tutorial/blob/master/Theano%20Tutorial.ipynb" target="_blank" rel="external">简化版教程</a>用theano写了一个MLP(multi-layer perceptron),这个好懂多了,所以做个介绍.教程实现的就是一个单隐层的神经网络,也就是一个MLP.</p>
+        <p>前几天看<a href="http://deeplearning.net/" target="_blank" rel="external">Deep learning</a>上的<a href="http://deeplearning.net/software/theano/tutorial/" target="_blank" rel="external">Theano教程</a>,看到shared variable就不明白说的啥,暂时放弃.<br><a id="more"></a><br>今天发现了网站上还有一个<a href="http://nbviewer.ipython.org/github/craffel/theano-tutorial/blob/master/Theano%20Tutorial.ipynb" target="_blank" rel="external">简化版教程</a>用theano写了一个MLP(multi-layer perceptron),这个好懂多了,所以做个介绍.教程实现的就是一个单隐层的神经网络,也就是一个MLP.</p>
 <p>Theano里什么CUDA GPU计算、自动差分的就不说了.Theano里为什么有shared variable这个东西.Shared variable就像全局变量一样可以被不同的使用这些变量的函数更新(函数一执行,变量就按照规则去更新),而且这些变量还有状态.这个东西就是为了机器学习模型的参数而设计的,因为模型参数需要通过迭代一次次更新,这些参数都是shared variables.</p>
 <p>下面这个就是MLP中一个层,这一层有一个连接权值W,偏置b,和一个激活函数activation(比如sigmoid之类),W和b都是shared variables,之后要更新它们.output函数返回的就是W<em>x+b,或者如果指定激活函数就返回activation(W</em>x+b).</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Layer(object):&#10;    def __init__(self, W_init, b_init, activation):&#10;        &#39;&#39;&#39;&#10;        A layer of a neural network, computes s(Wx + b) where s is a nonlinearity and x is the input vector.&#10;&#10;        :parameters:&#10;            - W_init : np.ndarray, shape=(n_output, n_input)&#10;                Values to initialize the weight matrix to.&#10;            - b_init : np.ndarray, shape=(n_output,)&#10;                Values to initialize the bias vector&#10;            - activation : theano.tensor.elemwise.Elemwise&#10;                Activation function for layer output&#10;        &#39;&#39;&#39;&#10;        # Retrieve the input and output dimensionality based on W&#39;s initialization&#10;        n_output, n_input = W_init.shape&#10;        # Make sure b is n_output in size&#10;        assert b_init.shape == (n_output,)&#10;        # All parameters should be shared variables.&#10;        # They&#39;re used in this class to compute the layer output,&#10;        # but are updated elsewhere when optimizing the network parameters.&#10;        # Note that we are explicitly requiring that W_init has the theano.config.floatX dtype&#10;        self.W = theano.shared(value=W_init.astype(theano.config.floatX),&#10;                               # The name parameter is solely for printing purporses&#10;                               name=&#39;W&#39;,&#10;                               # Setting borrow=True allows Theano to use user memory for this object.&#10;                               # It can make code slightly faster by avoiding a deep copy on construction.&#10;                               # For more details, see&#10;                               # http://deeplearning.net/software/theano/tutorial/aliasing.html&#10;                               borrow=True)&#10;        # We can force our bias vector b to be a column vector using numpy&#39;s reshape method.&#10;        # When b is a column vector, we can pass a matrix-shaped input to the layer&#10;        # and get a matrix-shaped output, thanks to broadcasting (described below)&#10;        self.b = theano.shared(value=b_init.reshape(-1, 1).astype(theano.config.floatX),&#10;                               name=&#39;b&#39;,&#10;                               borrow=True,&#10;                               # Theano allows for broadcasting, similar to numpy.&#10;                               # However, you need to explicitly denote which axes can be broadcasted.&#10;                               # By setting broadcastable=(False, True), we are denoting that b&#10;                               # can be broadcast (copied) along its second dimension in order to be&#10;                               # added to another variable.  For more information, see&#10;                               # http://deeplearning.net/software/theano/library/tensor/basic.html&#10;                               broadcastable=(False, True))&#10;        self.activation = activation&#10;        # We&#39;ll compute the gradient of the cost of the network with respect to the parameters in this list.&#10;        self.params = [self.W, self.b]&#10;        &#10;    def output(self, x):&#10;        &#39;&#39;&#39;&#10;        Compute this layer&#39;s output given an input&#10;        &#10;        :parameters:&#10;            - x : theano.tensor.var.TensorVariable&#10;                Theano symbolic variable for layer input&#10;&#10;        :returns:&#10;            - output : theano.tensor.var.TensorVariable&#10;                Mixed, biased, and activated x&#10;        &#39;&#39;&#39;&#10;        # Compute linear mix&#10;        lin_output = T.dot(self.W, x) + self.b&#10;        # Output is just linear mix if no activation function&#10;        # Otherwise, apply the activation function&#10;        return (lin_output if self.activation is None else self.activation(lin_output))</span><br></pre></td></tr></table></figure>
@@ -157,7 +156,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -178,7 +177,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

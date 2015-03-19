@@ -6,8 +6,7 @@
   <title>UFLDL教程总结(1) Autoencoder | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="Unsupervised Feature Learning and Deep Learning tutorial,作为深度学习的入门教程,是Andrew Ng机器学习公开课的后续.最近发现一学期要结束了,只完成了Ng的这两个教程.再悲剧点,这学期学的东西,大概这几篇博文就能说完了….
-整个教程的目的">
+  <meta name="description" content="Unsupervised Feature Learning and Deep Learning tutorial,">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -86,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p><a href="http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial" target="_blank" rel="external">Unsupervised Feature Learning and Deep Learning tutorial</a>,作为深度学习的入门教程,是Andrew Ng机器学习公开课的后续.最近发现一学期要结束了,只完成了Ng的这两个教程.再悲剧点,这学期学的东西,大概这几篇博文就能说完了….</p>
+        <p><a href="http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial" target="_blank" rel="external">Unsupervised Feature Learning and Deep Learning tutorial</a>,<br><a id="more"></a><br>作为深度学习的入门教程,是Andrew Ng机器学习公开课的后续.最近发现一学期要结束了,只完成了Ng的这两个教程.再悲剧点,这学期学的东西,大概这几篇博文就能说完了….</p>
 <p>整个教程的目的就是用无监督(数据无标签或者不用数据的标签)的方法从大量数据中学习数据本身的特征,然后加上机器学习的基本算法去分类数据.</p>
 <p>什么是特征(不是概念,而是指大家常用的用来表示原始数据的东西)?.对音频,特征一般就是这段音频的频谱,或者Mel频谱,或者MFCC,LPC什么的;对图像,就是图像里的纹理边角信息,比如SIFT什么的,或者其他图像的局部特征.这些特征被用作原始信号的抽象或者说精确或者说低维表达,作为机器学习算法的输入.</p>
 <p>这些特征光看名字就十分吓人了.他们是由speech community或者computer vision community里正儿八经的科学家们想出来的,这种特征叫做hand-engineered特征.前几十年的人工智能全靠使用这些复杂的特征的系统拼接起来来完成.比如语音识别系统,语音科学家们发现了MFCC这个特征不错,它和人的听觉系统有关,用它来做语音的低维表达效果更合理;然后工作交给了机器学习工作者,他们觉得GMM刚好可以作为复杂的语音的模型,又发现HMM刚好可以描述语音这个时间序列.用这些复杂的方法,再加上大量数据训练,HMM-GMM语音识别系统效果很好.这些系统性能的提高也全靠这些特征,通过不断改进特征(比如加上声带特征),性能确实提高了(因为特征更加合理了),但提高的效果并不显著.</p>
@@ -156,7 +154,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -177,7 +175,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

@@ -13,6 +13,8 @@ void draw(){
     rect(20*j,20*j,480-40*j,480-40*j, random(0,30),random(0,30),random(0,30),random(0,30));
   }
   i++;
+  a = sketchPath("dizzy.pde");
+  text(a, 100, 100);
 }
 void mousePressed(){
   frameRate(30);

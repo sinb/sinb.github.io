@@ -74,42 +74,6 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-03-19T05:17:36.000Z"><a href="/Artworks/homer-donuts/">2015-03-19</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/Artworks/homer-donuts/">Homer吃Donuts!!名字真low..</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>啥都看不见请换火狐.<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/Artworks/homer-donuts/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2015-03-19T05:17:27.000Z"><a href="/Artworks/eye/">2015-03-19</a></time>
       
       
@@ -192,21 +156,15 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>前几天看<a href="http://deeplearning.net/" target="_blank" rel="external">Deep learning</a>上的<a href="http://deeplearning.net/software/theano/tutorial/" target="_blank" rel="external">Theano教程</a>,看到shared variable就不明白说的啥,暂时放弃.今天发现了网站上还有一个<a href="http://nbviewer.ipython.org/github/craffel/theano-tutorial/blob/master/Theano%20Tutorial.ipynb" target="_blank" rel="external">简化版教程</a>用theano写了一个MLP(multi-layer perceptron),这个好懂多了,所以做个介绍.教程实现的就是一个单隐层的神经网络,也就是一个MLP.</p>
-<p>Theano里什么CUDA GPU计算、自动差分的就不说了.Theano里为什么有shared variable这个东西.Shared variable就像全局变量一样可以被不同的使用这些变量的函数更新(函数一执行,变量就按照规则去更新),而且这些变量还有状态.这个东西就是为了机器学习模型的参数而设计的,因为模型参数需要通过迭代一次次更新,这些参数都是shared variables.</p>
-<p>下面这个就是MLP中一个层,这一层有一个连接权值W,偏置b,和一个激活函数activation(比如sigmoid之类),W和b都是shared variables,之后要更新它们.output函数返回的就是W<em>x+b,或者如果指定激活函数就返回activation(W</em>x+b).</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Layer(object):&#10;    def __init__(self, W_init, b_init, activation):&#10;        &#39;&#39;&#39;&#10;        A layer of a neural network, computes s(Wx + b) where s is a nonlinearity and x is the input vector.&#10;&#10;        :parameters:&#10;            - W_init : np.ndarray, shape=(n_output, n_input)&#10;                Values to initialize the weight matrix to.&#10;            - b_init : np.ndarray, shape=(n_output,)&#10;                Values to initialize the bias vector&#10;            - activation : theano.tensor.elemwise.Elemwise&#10;                Activation function for layer output&#10;        &#39;&#39;&#39;&#10;        # Retrieve the input and output dimensionality based on W&#39;s initialization&#10;        n_output, n_input = W_init.shape&#10;        # Make sure b is n_output in size&#10;        assert b_init.shape == (n_output,)&#10;        # All parameters should be shared variables.&#10;        # They&#39;re used in this class to compute the layer output,&#10;        # but are updated elsewhere when optimizing the network parameters.&#10;        # Note that we are explicitly requiring that W_init has the theano.config.floatX dtype&#10;        self.W = theano.shared(value=W_init.astype(theano.config.floatX),&#10;                               # The name parameter is solely for printing purporses&#10;                               name=&#39;W&#39;,&#10;                               # Setting borrow=True allows Theano to use user memory for this object.&#10;                               # It can make code slightly faster by avoiding a deep copy on construction.&#10;                               # For more details, see&#10;                               # http://deeplearning.net/software/theano/tutorial/aliasing.html&#10;                               borrow=True)&#10;        # We can force our bias vector b to be a column vector using numpy&#39;s reshape method.&#10;        # When b is a column vector, we can pass a matrix-shaped input to the layer&#10;        # and get a matrix-shaped output, thanks to broadcasting (described below)&#10;        self.b = theano.shared(value=b_init.reshape(-1, 1).astype(theano.config.floatX),&#10;                               name=&#39;b&#39;,&#10;                               borrow=True,&#10;                               # Theano allows for broadcasting, similar to numpy.&#10;                               # However, you need to explicitly denote which axes can be broadcasted.&#10;                               # By setting broadcastable=(False, True), we are denoting that b&#10;                               # can be broadcast (copied) along its second dimension in order to be&#10;                               # added to another variable.  For more information, see&#10;                               # http://deeplearning.net/software/theano/library/tensor/basic.html&#10;                               broadcastable=(False, True))&#10;        self.activation = activation&#10;        # We&#39;ll compute the gradient of the cost of the network with respect to the parameters in this list.&#10;        self.params = [self.W, self.b]&#10;        &#10;    def output(self, x):&#10;        &#39;&#39;&#39;&#10;        Compute this layer&#39;s output given an input&#10;        &#10;        :parameters:&#10;            - x : theano.tensor.var.TensorVariable&#10;                Theano symbolic variable for layer input&#10;&#10;        :returns:&#10;            - output : theano.tensor.var.TensorVariable&#10;                Mixed, biased, and activated x&#10;        &#39;&#39;&#39;&#10;        # Compute linear mix&#10;        lin_output = T.dot(self.W, x) + self.b&#10;        # Output is just linear mix if no activation function&#10;        # Otherwise, apply the activation function&#10;        return (lin_output if self.activation is None else self.activation(lin_output))</span><br></pre></td></tr></table></figure>
-<p>然后下面这就是一个MLP,由几个layer和几个函数组成.首先要根据输入的W,b,activation的维度确定这是个几层的MLP,然后对每层赋值(每层都是一个Layer).MLP的两个函数,一个output执行forward计算,一层一层计算输出,最后返回MLP的输出;另一个squared_root,根据output的返回值和数据标签y进行对比,也就是误差函数,一会更新参数时需要计算这个误差函数的梯度.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class MLP(object):&#10;    def __init__(self, W_init, b_init, activations):&#10;        &#39;&#39;&#39;&#10;        Multi-layer perceptron class, computes the composition of a sequence of Layers&#10;&#10;        :parameters:&#10;            - W_init : list of np.ndarray, len=N&#10;                Values to initialize the weight matrix in each layer to.&#10;                The layer sizes will be inferred from the shape of each matrix in W_init&#10;            - b_init : list of np.ndarray, len=N&#10;                Values to initialize the bias vector in each layer to&#10;            - activations : list of theano.tensor.elemwise.Elemwise, len=N&#10;                Activation function for layer output for each layer&#10;        &#39;&#39;&#39;&#10;        # Make sure the input lists are all of the same length&#10;        assert len(W_init) == len(b_init) == len(activations)&#10;        &#10;        # Initialize lists of layers&#10;        self.layers = []&#10;        # Construct the layers&#10;        for W, b, activation in zip(W_init, b_init, activations):&#10;            self.layers.append(Layer(W, b, activation))&#10;&#10;        # Combine parameters from all layers&#10;        self.params = []&#10;        for layer in self.layers:&#10;            self.params += layer.params&#10;        &#10;    def output(self, x):&#10;        &#39;&#39;&#39;&#10;        Compute the MLP&#39;s output given an input&#10;        &#10;        :parameters:&#10;            - x : theano.tensor.var.TensorVariable&#10;                Theano symbolic variable for network input&#10;&#10;        :returns:&#10;            - output : theano.tensor.var.TensorVariable&#10;                x passed through the MLP&#10;        &#39;&#39;&#39;&#10;        # Recursively compute output&#10;        for layer in self.layers:&#10;            x = layer.output(x)&#10;        return x&#10;&#10;    def squared_error(self, x, y):&#10;        &#39;&#39;&#39;&#10;        Compute the squared euclidean error of the network output against the &#34;true&#34; output y&#10;        &#10;        :parameters:&#10;            - x : theano.tensor.var.TensorVariable&#10;                Theano symbolic variable for network input&#10;            - y : theano.tensor.var.TensorVariable&#10;                Theano symbolic variable for desired network output&#10;&#10;        :returns:&#10;            - error : theano.tensor.var.TensorVariable&#10;                The squared Euclidian distance between the network output and y&#10;        &#39;&#39;&#39;&#10;        return T.sum((self.output(x) - y)**2)</span><br></pre></td></tr></table></figure></p>
-<p>MLP创建完,还有就是梯度下降了.一般要进行梯度下降就要先写出误差函数,然后写出误差函数对于参数的导数函数,根据函数计算梯度.除了这个,还可以用数值方法计算梯度.UFLDL上说,写出导数函数后,需要梯度检查,用数值的方法计算梯度,和推导出的函数计算出的结果进行对比,确保无误.用数值的方法计算梯度也就是直接取极限,用两个相差很小的x计算出的f(x),作差,求商,这样做很慢,所以UFLDL上提醒在随后进行训练的时候要记着关掉梯度检查.Theano用的方法比这两个都聪明,它的符号表达式组成了一个图,从这个图里可以找到求差分的方法,就能自动差分了,不用写梯度表达式也不用数值计算的方法.下面这个梯度下降使用了动量来控制参数更新.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def gradient_updates_momentum(cost, params, learning_rate, momentum):&#10;    &#39;&#39;&#39;&#10;    Compute updates for gradient descent with momentum&#10;    &#10;    :parameters:&#10;        - cost : theano.tensor.var.TensorVariable&#10;            Theano cost function to minimize&#10;        - params : list of theano.tensor.var.TensorVariable&#10;            Parameters to compute gradient against&#10;        - learning_rate : float&#10;            Gradient descent learning rate&#10;        - momentum : float&#10;            Momentum parameter, should be at least 0 (standard gradient descent) and less than 1&#10;   &#10;    :returns:&#10;        updates : list&#10;            List of updates, one for each parameter&#10;    &#39;&#39;&#39;&#10;    # Make sure momentum is a sane value&#10;    assert momentum &#60; 1 and momentum &#62;= 0&#10;    # List of update steps for each parameter&#10;    updates = []&#10;    # Just gradient descent on cost&#10;    for param in params:&#10;        # For each parameter, we&#39;ll create a param_update shared variable.&#10;        # This variable will keep track of the parameter&#39;s update step across iterations.&#10;        # We initialize it to 0&#10;        param_update = theano.shared(param.get_value()*0., broadcastable=param.broadcastable)&#10;        # Each parameter is updated by taking a step in the direction of the gradient.&#10;        # However, we also &#34;mix in&#34; the previous step according to the given momentum value.&#10;        # Note that when updating param_update, we are using its old value and also the new gradient step.&#10;        updates.append((param, param - learning_rate*param_update))&#10;        # Note that we don&#39;t need to derive backpropagation to compute updates - just use T.grad!&#10;        updates.append((param_update, momentum*param_update + (1. - momentum)*T.grad(cost, param)))&#10;    return updates</span><br></pre></td></tr></table></figure></p>
-<p>最后是一个实例,产生了两个二维高斯分布,一个中心点在[-1,-1], 一个在[1,1],方差给了随机值,总之就是两个分布.一共有1000个点在这两个分布里,使用MLP对这1000个点进行分类.训练数据X.shape = (2, 1000),标签y.shape = (1000,).<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># Training data - two randomly-generated Gaussian-distributed clouds of points in 2d space&#10;np.random.seed(0)&#10;# Number of points&#10;N = 1000&#10;# Labels for each cluster&#10;y = np.random.random_integers(0, 1, N)&#10;# Mean of each cluster&#10;means = np.array([[-1, 1], [-1, 1]])&#10;# Covariance (in X and Y direction) of each cluster&#10;covariances = np.random.random_sample((2, 2)) + 1&#10;# Dimensions of each point&#10;X = np.vstack([np.random.randn(N)*covariances[0, y] + means[0, y],&#10;               np.random.randn(N)*covariances[1, y] + means[1, y]])&#10;# Plot the data&#10;plt.figure(figsize=(8, 8))&#10;plt.scatter(X[0, :], X[1, :], c=y, lw=.3, s=3, cmap=plt.cm.cool)&#10;plt.axis([-6, 6, -6, 6])&#10;plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>之后要创建一个MLP,这里用了输入大小是2(二维),隐层大小4,输出大小1,每层都使用sigmoid函数.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># First, set the size of each layer (and the number of layers)&#10;# Input layer size is training data dimensionality (2)&#10;# Output size is just 1-d: class label - 0 or 1&#10;# Finally, let the hidden layers be twice the size of the input.&#10;# If we wanted more layers, we could just add another layer size to this list.&#10;layer_sizes = [X.shape[0], X.shape[0]*2, 1]&#10;# Set initial parameter values&#10;W_init = []&#10;b_init = []&#10;activations = []&#10;for n_input, n_output in zip(layer_sizes[:-1], layer_sizes[1:]):&#10;    # Getting the correct initialization matters a lot for non-toy problems.&#10;    # However, here we can just use the following initialization with success:&#10;    # Normally distribute initial weights&#10;    W_init.append(np.random.randn(n_output, n_input))&#10;    # Set initial biases to 1&#10;    b_init.append(np.ones(n_output))&#10;    # We&#39;ll use sigmoid activation for all layers&#10;    # Note that this doesn&#39;t make a ton of sense when using squared distance&#10;    # because the sigmoid function is bounded on [0, 1].&#10;    activations.append(T.nnet.sigmoid)&#10;# Create an instance of the MLP class&#10;mlp = MLP(W_init, b_init, activations)&#10;&#10;# Create Theano variables for the MLP input&#10;mlp_input = T.matrix(&#39;mlp_input&#39;)&#10;# ... and the desired output&#10;mlp_target = T.vector(&#39;mlp_target&#39;)&#10;# Learning rate and momentum hyperparameter values&#10;# Again, for non-toy problems these values can make a big difference&#10;# as to whether the network (quickly) converges on a good local minimum.&#10;learning_rate = 0.01&#10;momentum = 0.9&#10;# Create a function for computing the cost of the network given an input&#10;cost = mlp.squared_error(mlp_input, mlp_target)&#10;# Create a theano function for training the network&#10;train = theano.function([mlp_input, mlp_target], cost,&#10;                        updates=gradient_updates_momentum(cost, mlp.params, learning_rate, momentum))&#10;# Create a theano function for computing the MLP&#39;s output given some input&#10;mlp_output = theano.function([mlp_input], mlp.output(mlp_input))</span><br></pre></td></tr></table></figure></p>
-<p>然后就开始迭代,这里用了20次迭代.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># Keep track of the number of training iterations performed&#10;iteration = 0&#10;# We&#39;ll only train the network with 20 iterations.&#10;# A more common technique is to use a hold-out validation set.&#10;# When the validation error starts to increase, the network is overfitting,&#10;# so we stop training the net.  This is called &#34;early stopping&#34;, which we won&#39;t do here.&#10;max_iteration = 20&#10;while iteration &#60; max_iteration:&#10;    # Train the network using the entire training set.&#10;    # With large datasets, it&#39;s much more common to use stochastic or mini-batch gradient descent&#10;    # where only a subset (or a single point) of the training set is used at each iteration.&#10;    # This can also help the network to avoid local minima.&#10;    current_cost = train(X, y)&#10;    # Get the current network output for all points in the training set&#10;    current_output = mlp_output(X)&#10;    # We can compute the accuracy by thresholding the output&#10;    # and computing the proportion of points whose class match the ground truth class.&#10;    accuracy = np.mean((current_output &#62; .5) == y)&#10;    # Plot network output after this iteration&#10;    plt.figure(figsize=(8, 8))&#10;    plt.scatter(X[0, :], X[1, :], c=current_output,&#10;                lw=.3, s=3, cmap=plt.cm.cool, vmin=0, vmax=1)&#10;    plt.axis([-6, 6, -6, 6])&#10;    plt.title(&#39;Cost: &#123;:.3f&#125;, Accuracy: &#123;:.3f&#125;&#39;.format(float(current_cost), accuracy))&#10;    plt.show()&#10;    iteration += 1</span><br></pre></td></tr></table></figure></p>
-
+        <p>前几天看<a href="http://deeplearning.net/">Deep learning</a>上的<a href="http://deeplearning.net/software/theano/tutorial/">Theano教程</a>,看到shared variable就不明白说的啥,暂时放弃.<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/theano-mlp/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -234,16 +192,15 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>之前的MNIST每张图片大小只有28*28,所以把它展成大小为784的向量作为输入还能计算.但如果图片稍微大点,比如96*96,就相当于有大概\(10^4\)个输入值,如果隐藏层是100,那就有\(10^6\)个参数,不管是前馈还是BP都会很慢.</p>
-<p>解决办法是不能再把整个图像展开成一个向量作为输入了,这样的做法叫做全连接.如果使用一个局部的接收域(receptive field),用这个小的接收域在大图像上移动,就解决了输入过大的问题.那卷积是什么意思?<br><img src="/images/cnn_1.gif" alt=""><br>上面这个图,体现出了接收域和卷积的意思.左边5*5的大矩阵就是输入的大图像,中间移动的3*3小矩阵就是接收域.接受域不停移动,在输入图像的每一块上计算(把接受域想象成一个滤波器,这个计算就是用滤波器去乘以图像再求和),这个过程就是卷积.可与看到用这个方法把5*5的原始图像变成了3*3的一个特征.</p>
-<p>接受域对应的这个滤波器是怎么来的?在UFLDL之前的教程上,我们从96*96的大图片数据集里随机找了100k个8*8的小图片,用autoencoder训练了这些小图片(输入3*8*8,中间层400个神经元),于是中间这400个神经元就可以看作是小图片的特征了(也就是大图片的精细特征),每一个特征的参数都是3个8*8的矩阵.所以我们可以用这些训练好的8*8矩阵作为接收域的滤波器,用卷积的方法去提取输入图片上的特征(比如接受域的特征代表的意思是某个方向的一条线,那用卷积的方法就可以在输入图像找依次寻找这个方向的线.).</p>
-<p>假设某一个通道,输入图像是64*64,用8*8的接收域滤波器去卷机,得到的结果是57*57的矩阵(根据卷积的性质来的).卷积神经网络的第二步叫做pooling,用来进一步降低数据维度.<br><img src="/images/cnn_2.gif" alt=""><br>这张图就是pooling的意思,从一块区域中选择一个最大值,或者求平均值,总之就是把一块区域变成了一个数.Pooling可以带来很多很好的特性,比如translation invariant.</p>
-
+        <p>之前的MNIST每张图片大小只有28*28,所以把它展成大小为784的向量作为输入还能计算.<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/convolutionNN/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -271,14 +228,15 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.因为MNIST的每个数据点就是在[0,1]之间的,所以这样合理.但有时候我们的输入不是[0,1]之间,比如我们用了白化后的结果,我们就希望输出不要限制在[0,1]之间,最简单的方法就是把随后一层的sigmoid函数去掉,直接把线性组合的结果输出.这样做最后一层的误差就变了(变简单了),但中间的什么都没变.</p>
-<h1 id="实验">实验</h1><p>这个实验终于开始用RGB图了.数据集来自STL-10.首先从STL-10这个数据集中随机找了100k个8*8的小图片,用这些小图片训练autoencoder,期望提取出这些小图片的特征.由于是RGB图,有3个通道,所以输入是8*8*3=192的向量.这个autoencoder的最后一层的sigmoid函数去掉了,直接输出.实验在这就完了,已经由这100k个小图片训练出了小图片的特征.</p>
-
+        <p>之前我们都用sigmoid激活函数来让每个神经元的输出在[0,1]之间.<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/linear-decoder/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -306,25 +264,15 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>把Autoencoder堆起来,再加个softmax层,就是Deep Network了.这样之前的Autoencoder的训练过程叫做预训练(Pre-training),最后如果把整个网络用BP和数值优化方法训练,那后面这一步就叫做精调(Fine-tuning).</p>
-<p>层数增多后,网络就能表示更复杂信息,因为隐藏层都是前一层的非线性变换.为啥是非线性的?前一层的输入经过一组系数后,得到的是一个线性组合,给这个线性组合加上一个非线性的激活函数,就成非线性表达了.</p>
-<p>层数增多的缺点是:模型表达能力很强,但如果训练数据不足时就会过拟合;局部最小值会使数值优化方法不能得到最优解;层数多会梯度扩散(Diffusion of gradients),从后向前传递回去的误差会越来越小.</p>
-<p>所以要pre-training,也就是贪婪地逐层训练.主层训练利用了无标签数据,用它们无监督的学习特征,于是整个模型的初始值会比随机初始好,于是数值优化的结果也就好了.</p>
-<hr>
-<p>下面这个4层网络的中间两个隐藏层就是用Autoencoder贪婪逐层训练得来的.<br><img src="/images/stack_1.png" alt=""></p>
-<hr>
-<h1 id="n层网络的精调,使用Backpropagation">n层网络的精调,使用Backpropagation</h1><ul>
-<li>1 用正向传导计算\(L_{nl}\)层的激活输出,\(nl\)是层数.</li>
-<li>2 <img src="/images/stack_2.png" alt="">,计算最后一层误差,也就是softmax层的误差.</li>
-<li>3 对于\(  l = n_l-1, n_l-2, n_l-3, \ldots, 2\),从后往前开始计算各层各单元的误差<img src="/images/stack_3.png" alt="">.</li>
-<li>4 误差函数是<img src="/images/stack_6.png" alt="">,<br>关于各参数的梯度是<img src="/images/stack_5.png" alt=""><h1 id="实验">实验</h1>还是用MNIST,用了两个隐藏层,每个都是用Autoencoder训练.接着训练一个softmax层.最后把所有层用BP精调.</li>
-</ul>
-
+        <p>把Autoencoder堆起来,再加个softmax层,就是Deep Network了.<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/deep-networks/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -352,16 +300,15 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.</p>
-<h1 id="自学特征">自学特征</h1><p>这是一个Autoencoder:<br><img src="/images/stl_1.png" alt=""><br>训练好Autoencoder后,我们去掉这个网络的最后一层,那么第二层神经元的激活就成了特征,如下图.这些特征可以替代我们以前的样本,也可以与以前的样本联合起来.前者叫<strong>replace</strong>,即把\(\textstyle { (x_l^{(1)}, y^{(1)}), (x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) }\)换成\( \textstyle { (a_l^{(1)}, y^{(1)}), (a_l^{(2)}, y^{(2)}), \ldots (a_l^{(m_l)}, y^{(m_l)}) }\);后者叫<strong>concatenate</strong>,即\( \textstyle { ((x_l^{(1)}, a_l^{(1)}), y^{(1)}), ((x_l^{(2)}, a_l^{(1)}), y^{(2)}), \ldots, ((x_l^{(m_l)}, a_l^{(1)}), y^{(m_l)}) }\).<br><img src="/images/stl_2.png" alt=""></p>
-<h1 id="数据预处理时要记着的东西">数据预处理时要记着的东西</h1><p>之前我们对数据进行PCA或者ZCA白化处理时,用到了样本的均值和,还有计算出的特征向量组成的矩阵U,这些参数应该保存下来.当对这个训练好的模型输入新的数据做判断时,应该用这些参数对这个新数据做同样的处理.</p>
-<h1 id="实验">实验</h1><p>这个实验还是在MNIST上,用标签为5-9的数据来当作无标签数据,训练了一个autoencoder,再使用标签为0-4的数据作为输入,加上一个softmax分类器,用监督的方法来训练这个分类器,实现0-4这5类数字的判别.</p>
-
+        <p>自主学习,就是用Autoencoder学到的特征作为输入,来完成一些机器学习算法,比如分类.<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/self-taught/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -389,26 +336,16 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<h1 id="假设函数和代价函数及梯度">假设函数和代价函数及梯度</h1><p>softmax回归是逻辑斯蒂回归的推广,即,逻辑斯蒂回归只能区分两个类,softmax回归将它推广到了k个.<br>这东西听着这么简单,因为逻辑斯蒂回归就那么简单,但是大牛们一直在用,放在各种神经网络的最顶层当作分类器.</p>
-<hr>
-<p>逻辑斯蒂回归的假设函数和代价函数是这样的:$$\begin{align} h_\theta(x) = \frac{1}{1+\exp(-\theta^Tx)} \end{align} $$</p>
-<p><center><img src="/images/softmax_1.png" alt=""></center><br>推广到k个分类,就是这样了:</p>
-<p><center><img src="/images/softmax_2.png" alt=""></center></p>
-<p><center><img src="/images/softmax_3.png" alt=""></center><br>代价函数关于每个softmax 参数的梯度是</p>
-<p><center><img src="/images/softmax_4.png" alt=""></center><br>然后基本上就可以用数值优化方法(比如L-BFGS)里去迭代了.但还有个问题,因为假设函数是指数的,softmax会有一些奇特的性质,比如下面这个式子:</p>
-<p><center><img src="/images/softmax_5.png" alt=""></center><br>即它的参数同时加上一个常数结果不变,那就有很多组满足条件的参数了,这个叫做overparameterized.如果这样就去迭代会出现问题,所以在代价函数里加入了权值衰减项,问题就解决了.</p>
-<p><center><img src="/images/softmax_6.png" alt=""></center></p>
-<hr>
-<h1 id="softmax回归和k个逻辑斯蒂回归,什么时候使用?">softmax回归和k个逻辑斯蒂回归,什么时候使用?</h1><p>逻辑斯蒂回归也作为k类分类器,只要训练k个就行了.但是使用那个还得看情况.</p>
-<p>直接把UFLDL教程上的例子搬过来.是说,如果k个类互相排斥,就用softmax回归;如果不互相排斥,就用k个逻辑斯蒂回归.</p>
-<p>音乐分类:按照古典,乡村,摇滚,爵士来分,就用softmax;按照人声,舞曲,配乐,流行来分,就用k个逻辑斯蒂回归.</p>
-<h1 id="实验">实验</h1><p>直接使用MNIST的28*28=784维的向量作为输入,10个神经元作为分类,就是softmax回归了,直觉用类似训练逻辑斯蒂回归的方法来训练.</p>
-
+        <p>假设函数和代价函数及梯度</p>
+<h1 id="<!-_more_->">
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/softmax/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -436,24 +373,51 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>PCA的原理在<a href="http://sinb.github.io/Whatyouknowabout/pca1/" target="_blank" rel="external">这篇文章</a>里以及记录,这篇加上和PCA类似的ZCA白化.</p>
-<hr>
-<h1 id="PCA的另一种解释">PCA的另一种解释</h1><p>使用PCA时,计算了一个协方差矩阵的各个特征向量组成的矩阵U,<br>$$    \begin{align} U = \begin{bmatrix} | &amp; | &amp; &amp; | \\ u_1 &amp; u_2 &amp; \cdots &amp; u_n \\ | &amp; | &amp; &amp; | \end{bmatrix} \end{align} $$<br>如果要做PCA降维的话,比如要降到k维度,就选择上面那个矩阵u的前k列,作为一个Ureduce,用z = Ureduce * x就可以得到一个k维的向量.这个是PCA的一种解释,或者说实施,是Ng机器学习公开课上用的.在这个教程上他用了另外一种解释.如下.</p>
-<hr>
-<p>如果用上面整个的矩阵U去乘一个向量x,得到的还是n维向量,和x一样,它其实是经过旋转过的x的表示,新得到的这个向量的基底就是矩阵U里的每个列向量,也就是用那些特征向量做为基底了.<br>$$    \begin{align} x_{\rm rot} = U^Tx = \begin{bmatrix} u_1^Tx \\ u_2^Tx \end{bmatrix} \end{align} $$</p>
-<p>我们已经知道了这些数据在这些基底上的变化程度,在第一个基底上变化最大,然后依次减少.意思就是我们新的到的这个\(x_{rot}\)最后几维很小,那么直接就可以省去了.<center><img src="/images/pca_4.png" alt=""></center><br>由于这个向量后面全是0,就直接可以省去当作一个k维向量,这就降维了,和最初那个方法一样.恢复数据的时候,把这个向量后面补上0,再去乘那个矩阵U的转置就变回去了.</p>
-<hr>
-<p>在图像上应用PCA时,应该对每副图像单独做一个归一化处理,就是先计算这副图像的intensity均值,然后每个像素点的值减掉这个均值.<br>$$\mu^{(i)} := \frac{1}{n} \sum_{j=1}^n x^{(i)}_j \\<br>x^{(i)}_j := x^{(i)}_j - \mu^{(i)}$$</p>
-<hr>
-<h1 id="ZCA白化">ZCA白化</h1><p>如果想让信号的每个分量变得不相关,并且都具有相同的方差,就要用到白化.实际上我们之前计算的旋转过的表示\(x_{rot}\)已经具有了这个性质,下面是一个例子,这些二维点的协方差矩阵是这样的<br>$$\begin{align} \begin{bmatrix} 7.29 &amp; 0 \\ 0 &amp; 0.69 \end{bmatrix}. \end{align} $$<br>再给经过下面这一步,得到的协方差就是单位阵了.</p>
-<p><center><img src="/images/zca_1.png" alt=""></center><br>再经过下面这一步,就得到了ZCA白化,结果的协方差依然是单位阵.</p>
-<p><center><img src="/images/zca_2.png" alt=""></center><br>ZCA白化的结果最接近原始的信号,只是有了更好的性质.</p>
-
+        <p>PCA的原理在<a href="http://sinb.github.io/Whatyouknowabout/pca1/">这篇文章</a>里以及记录,<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/ufldl-part2/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-10T03:08:26.000Z"><a href="/Whatyouknowabout/ufldl-part1/">2014-12-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/Whatyouknowabout/ufldl-part1/">UFLDL教程总结(1) Autoencoder</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial">Unsupervised Feature Learning and Deep Learning tutorial</a>,<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/Whatyouknowabout/ufldl-part1/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -486,7 +450,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -507,7 +471,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   

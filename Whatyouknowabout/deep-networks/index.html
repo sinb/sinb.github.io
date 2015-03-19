@@ -6,8 +6,7 @@
   <title>UFLDL教程总结(5) 从self-taught到deep networks | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="把Autoencoder堆起来,再加个softmax层,就是Deep Network了.这样之前的Autoencoder的训练过程叫做预训练(Pre-training),最后如果把整个网络用BP和数值优化方法训练,那后面这一步就叫做精调(Fine-tuning).
-层数增多后,网络就能表示更复杂信息">
+  <meta name="description" content="把Autoencoder堆起来,再加个softmax层,就是Deep Network了.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -86,8 +85,7 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
-<p>把Autoencoder堆起来,再加个softmax层,就是Deep Network了.这样之前的Autoencoder的训练过程叫做预训练(Pre-training),最后如果把整个网络用BP和数值优化方法训练,那后面这一步就叫做精调(Fine-tuning).</p>
+        <p>把Autoencoder堆起来,再加个softmax层,就是Deep Network了.<br><a id="more"></a><br>这样之前的Autoencoder的训练过程叫做预训练(Pre-training),最后如果把整个网络用BP和数值优化方法训练,那后面这一步就叫做精调(Fine-tuning).</p>
 <p>层数增多后,网络就能表示更复杂信息,因为隐藏层都是前一层的非线性变换.为啥是非线性的?前一层的输入经过一组系数后,得到的是一个线性组合,给这个线性组合加上一个非线性的激活函数,就成非线性表达了.</p>
 <p>层数增多的缺点是:模型表达能力很强,但如果训练数据不足时就会过拟合;局部最小值会使数值优化方法不能得到最优解;层数多会梯度扩散(Diffusion of gradients),从后向前传递回去的误差会越来越小.</p>
 <p>所以要pre-training,也就是贪婪地逐层训练.主层训练利用了无标签数据,用它们无监督的学习特征,于是整个模型的初始值会比随机初始好,于是数值优化的结果也就好了.</p>
@@ -162,7 +160,7 @@
   <h3 class="title">分類</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+    <li><a href="/categories/Artworks/">Artworks</a><small>5</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>4</small></li>
   
@@ -183,7 +181,7 @@
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
   
-    <li><a href="/tags/Processing/">Processing</a><small>6</small></li>
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   
