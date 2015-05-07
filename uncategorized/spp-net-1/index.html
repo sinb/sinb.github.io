@@ -6,7 +6,7 @@
   <title>[论文笔记]Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="使用过卷积神经网络(CNN)的人都知道,训练数据的维度都是相同的,这样经过卷积池化后,得到的特征维度才能相同,进而才能将特征输入到分类器中训练分类器.输入维度相同这个限制太大了,这篇文章主要针对这个缺陷进行了改进,具体地就是加入了空间金字塔池化(Spatial Pyrimid Pooling),使得">
+  <meta name="description" content="使用过卷积神经网络(CNN)的人都知道,训练数据的维度都是相同的,这样经过卷积池化后,得到的特征维度才能相同,进而才能将特征输入到分类器中训练分类器.输入维度相同这个限制太大了,这篇文章主要针对这个缺陷进行了改进,具体地就是加入了空间金字塔池化(Spatial Pyrimid Pooling),使得不同维度的输入最后都能得到相同维度的输出.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -85,7 +85,7 @@
     </header>
     <div class="entry">
       
-        <p>使用过卷积神经网络(CNN)的人都知道,训练数据的维度都是相同的,这样经过卷积池化后,得到的特征维度才能相同,进而才能将特征输入到分类器中训练分类器.输入维度相同这个限制太大了,这篇文章主要针对这个缺陷进行了改进,具体地就是加入了空间金字塔池化(Spatial Pyrimid Pooling),使得不同维度的输入最后都能得到相同维度的输出.</p>
+        <p>使用过卷积神经网络(CNN)的人都知道,训练数据的维度都是相同的,这样经过卷积池化后,得到的特征维度才能相同,进而才能将特征输入到分类器中训练分类器.输入维度相同这个限制太大了,这篇文章主要针对这个缺陷进行了改进,具体地就是加入了空间金字塔池化(Spatial Pyrimid Pooling),使得不同维度的输入最后都能得到相同维度的输出.<br><a id="more"></a></p>
 <h2 id="简介">简介</h2><p>作者认为,传统CNN所需要的固定维度输入这一限制,是造成任意尺度的图片识别准确率低的原因.传统的CNN需要先对训练图片进行处理,使其维度相同.具体有两种做法,裁剪(cropping)和扭曲(warping).如下图.</p>
 <p><center><img src="/images/spp/spp1.png" width="500px"></center><br>缺点是:裁剪了的区域可能并不包含整个物体,而扭曲则会带入几何方面的失真.另外,即使是裁剪和扭曲,我们仍然是认为规定了一个输入尺度,而真实的物体尺度很多,这个固定维度的输入直接忽略掉了这一点.<br>为何非要给CNN限制一个固定维度的输入?作者说,CNN就分两块,卷积层和全连层(fully-connected layer),卷积层的输出是特征图(feature map),这个特征图反映出了原始输入图片中对filter(卷积核)激活的空间信息.卷积这一步是不需要固定大小的.是最后的全连层带来的这个限制.<br>作者针对这个问题,提出了在CNN的最后一个卷积层之后,加入一个SPP层,也就是空间金字塔池化,对之前卷积得到的特征进行”整合”(aggregation),然后得到一个固定长度的特征向量,再传到全连层去.如下图.</p>
 <p><center><img src="/images/spp/spp2.png" width="500px"></center><br>SPP是词袋模型(Bag-of-Words)的扩展.为什么说是扩展?词袋模型没有特征的空间信息(就像它只能统计一个句子中每个单词的词频,而不能记录词的位置信息一样).在深层CNN里加入SPP会有3个优势: 1) 相比之前的滑动窗池化(sliding window pooling),SPP可以对不同维度输入得到固定长度输出. 2) SPP使用了多维的spatial bins(我的理解就是多个不同大小的窗),而滑动窗池化只用了一个窗. 3) 因为输入图片尺度可以是任意的,SPP就提取除了不同尺度的特征.作者说这3点可以提高深度网络的识别准确率.</p>
