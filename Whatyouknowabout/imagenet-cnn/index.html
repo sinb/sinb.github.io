@@ -101,7 +101,7 @@
 <p><center><img src="/images/cnn_2.gif" width="500px"></center></p>
 <p><center><img src="/images/spp/spp6.png" width="500px"></center></p>
 <h2 id="Overall_Architecture">Overall Architecture</h2><p>整个网络共8层,前5曾卷积网络,后3层全连网络,最后接一个1000路softmax分类器.这图分了上下两部分,代表两个GPU,各训练一半的filter和神经元.不过两个GPU会在第2,3层通信,作者说这是一个trick.这图里没有把池化和归一化操作画成图,池化只在第一层,第二层,第五层之后做了.</p>
-<p><center><img src="/images/imagenet-cnn/cnn3.png" width="800px"></center><br>从图上看,输入是224x224x3,第一层是96个filter,两个GPU各接受48个,filter大小是11x11x3,所以每一个GPU,第一层的feature map大小是48x55x55(55是卷积的时候用了步长为4得出的,原图片作为输入的时候肯定补0了,这是cuda-convnet自己做的).经然后这个图就看不懂了.输入经过卷积后每一个GPU的输出是48x55x55,然后是最大化池化,应该是变成了48x27x27再输入到第二层网络(当然,还要normalization一下),但这个图上由于把pooling层没画出来,看不到这个48x27x27,到是有一个128x27x27,怎么回事?128不应该是再下一层的filter个数吗?这里先放着吧.</p>
+<p><center><img src="/images/imagenet-cnn/cnn3.png" width="800px"></center><br>从图上看,输入是224x224x3,第一层是96个filter,两个GPU各接受48个,filter大小是11x11x3,所以每一个GPU,第一层的feature map大小是48x55x55(55是卷积的时候用了步长为4得出的,原图片作为输入的时候肯定补0了,这是cuda-convnet自己做的).然后这个图就看不懂了.输入经过卷积后每一个GPU的输出是48x55x55,然后是最大池化,应该是变成了48x27x27再输入到第二层网络(当然,还要normalization一下),但这个图上没把pooling层画出来,看不到这个48x27x27,到是有一个128x27x27,怎么回事?128不应该是再下一层的filter个数吗?这里只能先放着吧.</p>
 
       
     </div>
@@ -116,7 +116,7 @@
         
   
   <div class="tags">
-    <a href="/tags/CNN/">CNN</a>, <a href="/tags/Deep-Learning/">Deep Learning</a>, <a href="/tags/Paper/">Paper</a>, <a href="/tags/SPP/">SPP</a>
+    <a href="/tags/CNN/">CNN</a>, <a href="/tags/Deep-Learning/">Deep Learning</a>, <a href="/tags/Imagenet/">Imagenet</a>, <a href="/tags/Paper/">Paper</a>
   </div>
 
         
@@ -187,6 +187,8 @@ var duoshuoQuery = {short_name:"sinb"};
   
     <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
   
+    <li><a href="/tags/Imagenet/">Imagenet</a><small>1</small></li>
+  
     <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
   
     <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
@@ -194,8 +196,6 @@ var duoshuoQuery = {short_name:"sinb"};
     <li><a href="/tags/Paper/">Paper</a><small>3</small></li>
   
     <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
-  
-    <li><a href="/tags/SPP/">SPP</a><small>1</small></li>
   
     <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
   
