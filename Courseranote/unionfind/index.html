@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="baidu-site-verification" content="xdZ6LobkoN" />
+  <meta charset="utf-8">
+  
+  <title>(Algorithms)动态连通性,Union Find,渗透模型,蒙特卡罗采样 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="最近在看两个算法课程,一个是北京大学开的算法设计与分析(大妈讲),一个是普林斯顿的Algorithms(大爷讲).普林斯顿的代码讲的比较多,一边讲算法一边讲怎么写API.看了看北大的课程目录,弱弱的不想看了..">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="(Algorithms)动态连通性,Union Find,渗透模型,蒙特卡罗采样"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Courseranote">Coursera笔记</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-05-03T02:21:29.000Z"><a href="/Courseranote/unionfind/">2015-05-03</a></time>
+      
+      
+  
+    <h1 class="title">(Algorithms)动态连通性,Union Find,渗透模型,蒙特卡罗采样</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近在看两个算法课程,一个是北京大学开的<a href="https://class.coursera.org/algorithms-001" target="_blank" rel="external">算法设计与分析</a>(大妈讲),一个是普林斯顿的<a href="https://class.coursera.org/algs4partI-007" target="_blank" rel="external">Algorithms</a>(大爷讲).普林斯顿的代码讲的比较多,一边讲算法一边讲怎么写API.看了看北大的课程目录,弱弱的不想看了..<br><a id="more"></a><br>以下内容参考自普林斯顿<a href="https://class.coursera.org/algs4partI-007" target="_blank" rel="external">Algorithms</a> Week 1.</p>
+<h2 id="连通性问题">连通性问题</h2><p>两个点之间若存在路径则它们是连通的.从这图里就可以看到这个算法涉及到的一些问题,比如新增加了一条路径,那么很多点的连通性都会改变.图中的点有几个连通区域?像这个图中有两部分.以及,怎么计算连通性.</p>
+<center><img src="/images/algpart1/conn.png" alt=""></center><br>当然除了计算连通性的算法,也需要找出两个点之间的路径的算法.<br><center><img src="/images/algpart1/conn1.png" width="500px"></center>
+
+<h2 id="算法">算法</h2><h3 id="1-快速查找">1.快速查找</h3><p>最朴素的想法,通过一个数组来记录连通区域信息,属于同一个连通区域的点是连通的.</p>
+<center><img src="/images/algpart1/conn2.png" width="500px"></center><br>那么当新加入一条路径时,怎么来更新连通区域信息呢?这个更直观了,把两个区域连接在一起,就是把数组里的数字变相同就行.下图中新添加一个1到6的路径,那么1所属的区域就和6所属的区域连通了,都6所属区域的每个点改变信息就行.<br><center><img src="/images/algpart1/conn3.png" width="500px"></center><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> alg.coursera;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickFindUF</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">QuickFindUF</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">		id = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">		<span class="comment">//初始化,需要操作数组N次</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">			id[i] = i;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//判断,需要操作数组2次</span></span><br><span class="line">		<span class="keyword">return</span> id[p] == id[q];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> pid = id[p];</span><br><span class="line">		<span class="keyword">int</span> qid = id[q];</span><br><span class="line"><span class="comment">//		把p和q连起来,就是把p所属的区域里所有的点记录的区域标号pid</span></span><br><span class="line"><span class="comment">//		全部换成q所属的区域标号qid</span></span><br><span class="line"><span class="comment">//		最多需要操作数组2N+2次		</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; id.length; i++)</span><br><span class="line">			<span class="keyword">if</span> (id[i] == pid)</span><br><span class="line">				id[i] = qid;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printId</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;id.length; i++)&#123;</span><br><span class="line">			System.out.println(id[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>这个算法虽然叫快速查找(也叫eager approach),但是它太慢了,在N个点上做N次union操作需要\(N^2\)次数组操作.随着问题规模变大,算法就不能用了.<center><img src="/images/algpart1/conn4.png"></center>
+
+<h3 id="2-快速连接">2.快速连接</h3><p>上面那个算法主要问题在于连接(union)这一步操作的太多.换一种想法把路径图看成树,如果我们记录的是每个点的父节点信息,因为如果两个点连通,那么它们的父节点的父节点的父节点(根节点)是相同的,这样也可以判断连通性.<br><img src="/images/algpart1/conn5.png">  <img src="/images/algpart1/conn6.png"><br>如果要把3和5连接起来,只要把3个根节点和5的根节点连起来.下图中,3个根节点是9,5的根节点是6,只需要修改1处就可以连通两块区域.<br><img src="/images/algpart1/conn7.png">  <img src="/images/algpart1/conn8.png"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> alg.coursera;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickUnionUF</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">QuickUnionUF</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">		id = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">			id[i] = i;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">root</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">while</span> (i != id[i])<span class="comment">//从父节点找根节点,根节点的父节点是它本身,即i==id[i]</span></span><br><span class="line">			i = id[i];</span><br><span class="line">		<span class="keyword">return</span> i;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> root(p) == root(q);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> i = root(p);</span><br><span class="line">		<span class="keyword">int</span> j = root(q);</span><br><span class="line">		<span class="comment">//把p的根节点换成q的根节点</span></span><br><span class="line">		id[i] = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个算法还是慢,树可能太高了,寻找根节点要一层一层往上找.</p>
+<h3 id="3-快速连接改进">3.快速连接改进</h3><h4 id="3-1_加入权值">3.1 加入权值</h4><p>把p的根节点换成q的,或者把q的换成p的,在上面的算法里是一样的.但如果限定究竟是换哪个,就有可能限制住树的高度,让树不至于过高.改进方法就是通过比较树的大小(即树里的节点的个数,或者树的高度也行),每次都是把较小的树的根节点换成较大的树的根节点.就是这个图了.</p>
+<center><img src="/images/algpart1/conn9.png " width="500px"> </center><br>这样做可以得到一个很宽的树,但是都不高.实际上一个节点的最大深度是\(log_{2}N\)<br><center><img src="/images/algpart1/conn10.png" width="500px"></center>
+
+<p>证明呢?这样想,下图中有两个树T1和T2,x是T1中的一个节点.如果把T1的根节点换成T2的,那么节点x的深度就增加1.由于规定了只有当T1比T2小(节点数少)的时候才做这样的操作,所以T1和T2连起来后的大小肯定比T1的一倍还大.我们本来一共有N个节点,假设T1大小是1,连接一次它的大小增加比一倍多,它最多只能增加\(log_{2}N\)次大小就超过N了.所以节点的深度最大也就那么多.</p>
+<center><img src="/images/algpart1/conn11.png" width="500px"></center>
+
+<h3 id="3-2_路径压缩">3.2 路径压缩</h3><p>这个想法是,管它什么父节点呢,反正最后判断和连接时候用的都是根节点,那就在计算p的根节点的时候,把顺着p上去一直走到根节点时遇到的所有节点变成p的根节点,比如找9的根节点的时候,一路上碰到了6,3,1,就把6,3,1的根节点设为9的根节点0.大爷给出这样做的理由有点无语,No reason not to! Keeps tree almost completely flat.</p>
+<p><center><img src="/images/algpart1/conn12.png" height="500px"></center></p>
+<p><center><img src="/images/algpart1/conn13.png" width="500px"></center><br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Weighted QuickFindUnionFind with path compression</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> WQuickFindUF &#123; </span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[] parent;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[] <span class="keyword">size</span>; <span class="comment">//用来记录每个节点所属于的树的大小</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> <span class="keyword">count</span>; <span class="comment">//记录有几个连通部分</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> WQuickFindUF(<span class="keyword">int</span> N) &#123;</span><br><span class="line">		parent = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">		<span class="keyword">size</span> = <span class="keyword">new</span> <span class="keyword">int</span>[N];</span><br><span class="line">		<span class="keyword">count</span> = N; <span class="comment">//开始时互不相连</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)&#123;</span><br><span class="line">			parent[i] = i;</span><br><span class="line">			<span class="keyword">size</span>[i] = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> <span class="keyword">count</span>() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">count</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> root(<span class="keyword">int</span> i) &#123;</span><br><span class="line">		<span class="keyword">while</span> (i != parent[i]) &#123;<span class="comment">//从父节点找根节点,根节点的父节点是它本身,即i==parent[i]</span></span><br><span class="line">			parent[i] = parent[parent[i]]; <span class="comment">//如果i不是根节点,那么就把i的父节点设为i的祖父节点,也就是往上跳一个</span></span><br><span class="line">			i = parent[i];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> i;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">boolean</span> connected(<span class="keyword">int</span> p, <span class="keyword">int</span> q) &#123;</span><br><span class="line">		<span class="keyword">return</span> root(p) == root(q);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> union(<span class="keyword">int</span> p, <span class="keyword">int</span> q) &#123;</span><br><span class="line">		<span class="keyword">int</span> rootP = root(p);</span><br><span class="line">		<span class="keyword">int</span> rootQ = root(q);</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">size</span>[rootP] &lt; <span class="keyword">size</span>[rootQ]) &#123;</span><br><span class="line">			<span class="comment">//p小,把p的根节点换成q的</span></span><br><span class="line">			parent[rootP] = rootQ;</span><br><span class="line">			<span class="comment">//这一步相当于把p所在的树加到了q所在的树下,所以q所在的树的大小需要更新</span></span><br><span class="line">			<span class="keyword">size</span>[rootQ] += <span class="keyword">size</span>[rootP];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			parent[rootQ] = rootP;</span><br><span class="line">			<span class="keyword">size</span>[rootP] += <span class="keyword">size</span>[rootQ];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">count</span>--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="渗透模型(Percolation)">渗透模型(Percolation)</h2><p>连通性的一个应用就是渗透模型了,下图左边是渗透的,右边不渗透,就是说水能从最上面沿着白孔流到最底,也就是至少在第一行有一个白孔,最底下存在一个白孔,这两个孔是连通的.</p>
+<p><center><img src="/images/algpart1/conn17.png" height="700px"></center><br>大概比较笨的人都会把问题想成我想的这样吧,正确的做法是多加两个虚拟点(virtual site),如果这个模型是渗透的,那么虚顶点和虚底点就是连通的.然后问题一下子就简单了.</p>
+<p><center><img src="/images/algpart1/conn18.png" height="700px"></center><br>那么一个模型渗透的概率是多少?假设有一个20乘20的模型,它里面的孔是白色(unblocked)的概率是p,黑色(blocked)孔的概率是1-p,那么这个模型渗透的概率是多少?看样子不太好用数学公式描述,事实上它就是不能解的.解决方法是用大量模拟实验(simulation)来找到这个概率,也就是蒙特卡罗采样了.当p比某个值大的时候,模型几乎总是渗透,p比某个值小的时候模型几乎不渗透.这么非线性看来确实不好用数学公式描述.</p>
+<p><center><img src="/images/algpart1/conn19.png" width="500px"></center><br>渗透模型和模拟实验的代码很简单,我写了一个原始的<a href="https://github.com/sinb/Coursera-algs4partI-007/tree/master/PercolationExp/src/alg/coursera" target="_blank" rel="external">版本</a>,啥错误处理都没,不过能用.这几个图是提供的原始输入文件画出来的(右下角就是那大爷..年轻时候吧).蓝色代表这些点是和最顶上连着的,水能渗透过来.</p>
+<p><center><img src="/images/algpart1/conn16.png" height="700px"></center></p>
+<h1 id="最后">最后</h1><p>讲这门课的大爷除了写了本<a href="http://www.amazon.com/gp/product/032157351X/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=algs4-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=032157351X" target="_blank" rel="external">Algorithms</a>,还写了本<a href="http://www.pearsonhighered.com/educator/academic/product/0,1144,0321498054,00.html" target="_blank" rel="external">Introduction to Programming in Java: An Interdisciplinary Approach</a>.我翻到这大爷给学生们留的<a href="http://introcs.cs.princeton.edu/java/assignments/" target="_blank" rel="external">编程作业</a>时就坐不住了,尼玛要是我大二时知道这大爷就好了.第一个作业就是Guitar Hero,往中间翻了翻还有Mozart Waltz Generator,这难道是我高中那会混迹<a href="http://www.u148.net/article/10786.html" target="_blank" rel="external">有意思吧</a>时看到的那个??!!</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Courseranote/">Courseranote</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Algorithms/">Algorithms</a>, <a href="/tags/CS-Foundation/">CS Foundation</a>, <a href="/tags/Coursera/">Coursera</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"sinb"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Courseranote/">Courseranote</a><small>1</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>4</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>16</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Algorithms/">Algorithms</a><small>1</small></li>
+  
+    <li><a href="/tags/CNN/">CNN</a><small>2</small></li>
+  
+    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>1</small></li>
+  
+    <li><a href="/tags/Coursera/">Coursera</a><small>1</small></li>
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
+  
+    <li><a href="/tags/Imagenet/">Imagenet</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Paper/">Paper</a><small>3</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/吉他/">吉他</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
