@@ -4,7 +4,7 @@
 <meta name="baidu-site-verification" content="xdZ6LobkoN" />
   <meta charset="utf-8">
   
-  <title>2D Discrete Cosine | Amnesia&#39;s blog</title>
+  <title>[DIP] 2D Discrete Cosine, 2D Convolution | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
   <meta name="description" content="">
@@ -12,7 +12,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="2D Discrete Cosine"/>
+  <meta property="og:title" content="[DIP] 2D Discrete Cosine, 2D Convolution"/>
   <meta property="og:site_name" content="Amnesia&#39;s blog"/>
 
   
@@ -83,7 +83,7 @@
       
       
   
-    <h1 class="title">2D Discrete Cosine</h1>
+    <h1 class="title">[DIP] 2D Discrete Cosine, 2D Convolution</h1>
   
 
     </header>
@@ -91,8 +91,15 @@
       
         <hr>
 <a id="more"></a>
-<p>之前一直没明白这图是个什么意思,原来它就是个简单的2D离散余弦信号..</p>
+<h2 id="2D_Discrete_Cosine">2D Discrete Cosine</h2><p>之前一直没明白这图是个什么意思,原来它就是个简单的2D离散余弦信号..</p>
 <p><center><img src="/images/dct/dct1.png" width="700px"></center><br>信号是\(cos(\omega_1n_1 + \omega_2n_2)\),\(\omega\)是频率.图中白色代表1,黑色-1,灰色就是(-1, 1)之间的值.<br>比如左上角第一个图,\(\omega_1 = 0, \omega_2=0\),这时候信号是\(cos(0*n_1 + 0*n_2)\),即\(cos(0) = 1\),所以无论\(n_1, n_2\)取什么值,信号都是1.<br>第一行第二个图,\(\omega_1 = 0, \omega_2=\pi/8\)时,信号是\(cos(0*n_1 + \pi/8*n_2)\),周期是\(2\pi/\omega_2 = 16\),图上画了半个周期.<br>其他的都类似了.右下角最后一个,信号在\(n_1\)方向和\(n_2\)方向的周期都是2,在两个方向上都以1,-1交替.<br>这些小图片就是DCT的基底了.</p>
+<h2 id="2D_Convolution">2D Convolution</h2><p>一个脉冲信号经过一个Linear shift-invariant系统,输出叫做系统的脉冲响应.然后,一个信号经过一个LSI系统,系统的响应是这个信号和系统的脉冲响应做卷积的结果.就这张图了.</p>
+<p><center><img src="/images/dct/conv1.png" width="700px"></center><br>为什么是这样呢?因为..你&lt;&lt;信号系统&gt;&gt;忘光了..<br>首先,任何一个离散信号都可以表示成下式的卷积形式.</p>
+<p><center><img src="/images/dct/conv2.png" width="500px"></center><br>这个式子的意思就是信号分解,比如有一个信号是这个样子.即\(x(-1, 0) = 1, x(0, 0) = 2, x(1, 0) = 3,x(0, 1) = 4 \).</p>
+<p><center><img src="/images/dct/conv3.png" width="150px"></center><br>把它拆开看,就是这个图.原信号可以写成不同系数乘以不同位置的脉冲信号再求和的形式.这个系数就是函数值,或者说原信号在某个位置的值.</p>
+<p><center><img src="/images/dct/conv4.png"></center><br>所以把一个信号输入到LSI系统中做变换,可以写乘这个样子.\(x(k_1, k_2)\)可以看成是系数.</p>
+<p><center><img src="/images/dct/conv5.png"></center><br>这个系统可以看做只对脉冲信号\(\delta\)做了变换(由于是线性系统,系数x可以提到外边去).而对脉冲信号\(\delta\)做变换,系统的输出又叫做脉冲响应\(h\),于是这个式子就变成了原信号\(x\)和脉冲响应\(h\)卷积的形式.</p>
+<p><center><img src="/images/dct/conv6.png"></center><br>好吧..当是复习信号系统了..</p>
 
       
     </div>
