@@ -4,7 +4,7 @@
 <meta name="baidu-site-verification" content="xdZ6LobkoN" />
   <meta charset="utf-8">
   
-  <title>Не думай о секундах свысока | Amnesia&#39;s blog</title>
+  <title>2D Discrete Cosine | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
   <meta name="description" content="">
@@ -12,7 +12,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Не думай о секундах свысока"/>
+  <meta property="og:title" content="2D Discrete Cosine"/>
   <meta property="og:site_name" content="Amnesia&#39;s blog"/>
 
   
@@ -79,17 +79,21 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-03-24T00:56:33.000Z"><a href="/Artworks/spring17/">2015-03-24</a></time>
+        <time datetime="2015-05-16T13:03:34.000Z"><a href="/Whatyouknowabout/2dcosine/">2015-05-16</a></time>
       
       
   
-    <h1 class="title">Не думай о секундах свысока</h1>
+    <h1 class="title">2D Discrete Cosine</h1>
   
 
     </header>
     <div class="entry">
       
-        <audio controls="controls" height="100" width="100"><br>  <source src="/images/0010.mp3" type="audio/mp3"><br>  <source src="/images/0010.ogg" type="audio/ogg"><br><embed height="100" width="100" src="/images/0010.mp3"><br></audio>
+        <hr>
+<a id="more"></a>
+<p>之前一直没明白这图是个什么意思,原来它就是个简单的2D离散余弦信号..</p>
+<p><center><img src="/images/dct/dct1.png" width="700px"></center><br>信号是\(cos(\omega_1n_1 + \omega_2n_2)\),\(\omega\)是频率.图中白色代表1,黑色-1,灰色就是(-1, 1)之间的值.<br>比如左上角第一个图,\(\omega_1 = 0, \omega_2=0\),这时候信号是\(cos(0*n_1 + 0*n_2)\),即\(cos(0) = 1\),所以无论\(n_1, n_2\)取什么值,信号都是1.<br>第一行第二个图,\(\omega_1 = 0, \omega_2=\pi/8\)时,信号是\(cos(0*n_1 + \pi/8*n_2)\),周期是\(2\pi/\omega_2 = 16\),图上画了半个周期.<br>其他的都类似了.右下角最后一个,信号在\(n_1\)方向和\(n_2\)方向的周期都是2,在两个方向上都以1,-1交替.<br>这些小图片就是DCT的基底了.</p>
+
       
     </div>
     <footer>
@@ -97,13 +101,13 @@
         
   
   <div class="categories">
-    <a href="/categories/Artworks/">Artworks</a>
+    <a href="/categories/Whatyouknowabout/">Whatyouknowabout</a>
   </div>
 
         
   
   <div class="tags">
-    <a href="/tags/吉他/">吉他</a>
+    <a href="/tags/DCT/">DCT</a>
   </div>
 
         
