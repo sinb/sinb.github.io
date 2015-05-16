@@ -1,211 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    
+  
   <url>
     <loc>http://sinb.github.io/Life/enjoyourbath/</loc>
-    <lastmod>2015-05-16T03:04:12.000Z</lastmod>
-    
-    </url>
-
-    
+    <lastmod>2015-05-16T08:40:06.000Z</lastmod>
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/spp-net-1/</loc>
     <lastmod>2015-05-15T02:55:02.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/imagenet-cnn/</loc>
     <lastmod>2015-05-13T14:29:36.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Life/straightstory/</loc>
     <lastmod>2015-05-12T07:13:04.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Courseranote/unionfind/</loc>
     <lastmod>2015-05-12T02:44:14.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/howtoreadapaper/</loc>
     <lastmod>2015-05-06T15:06:36.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/spring17/</loc>
     <lastmod>2015-03-24T01:05:22.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/convolutionNN/</loc>
     <lastmod>2015-03-19T13:46:08.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/deep-networks/</loc>
     <lastmod>2015-03-19T13:46:01.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/pca1/</loc>
     <lastmod>2015-03-19T13:45:55.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/normal-equation-ls/</loc>
     <lastmod>2015-03-19T13:45:44.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/mnist/</loc>
     <lastmod>2015-03-19T13:45:37.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/lissajous1/</loc>
     <lastmod>2015-03-19T13:45:29.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/linear-decoder/</loc>
     <lastmod>2015-03-19T13:45:13.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/fft-dft/</loc>
     <lastmod>2015-03-19T13:45:02.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Life/vodka/</loc>
     <lastmod>2015-03-19T13:44:48.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Life/umbrella/</loc>
     <lastmod>2015-03-19T13:44:45.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/ufldl-part1/</loc>
     <lastmod>2015-03-19T13:44:40.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/theano-mlp/</loc>
     <lastmod>2015-03-19T13:44:32.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/softmax/</loc>
     <lastmod>2015-03-19T13:44:11.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/self-taught/</loc>
     <lastmod>2015-03-19T13:44:03.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/pca-sparseNN-rbm/</loc>
     <lastmod>2015-03-19T13:43:53.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Whatyouknowabout/ufldl-part2/</loc>
     <lastmod>2015-03-19T13:43:37.000Z</lastmod>
-    
-    </url>
-
-    
-    
-    
+  </url>
+  
+  <url>
+    <loc>http://sinb.github.io/processingcode/game_1/web-export/index.html</loc>
+    <lastmod>2015-03-19T06:40:10.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sinb.github.io/processingcode/game_1/web-export/processing.js</loc>
+    <lastmod>2015-03-19T05:59:54.000Z</lastmod>
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/eye/</loc>
     <lastmod>2015-03-19T05:18:44.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/dizzy/</loc>
     <lastmod>2015-03-19T05:17:09.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/lines/</loc>
     <lastmod>2015-03-09T10:29:56.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Life/20111112WeekEnd/</loc>
     <lastmod>2015-03-09T10:29:56.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Artworks/processingtest/</loc>
     <lastmod>2015-03-09T10:29:56.000Z</lastmod>
-    
-    </url>
-
-    
+  </url>
+  
   <url>
     <loc>http://sinb.github.io/Life/wild-children/</loc>
     <lastmod>2015-03-09T10:29:56.000Z</lastmod>
-    
-    </url>
-
-    
-    
+  </url>
+  
+  <url>
+    <loc>http://sinb.github.io/links/index.html</loc>
+    <lastmod>2015-03-09T10:29:56.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sinb.github.io/about/index.html</loc>
+    <lastmod>2015-03-09T10:29:56.000Z</lastmod>
+  </url>
+  
 </urlset>
