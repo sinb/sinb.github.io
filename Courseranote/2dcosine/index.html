@@ -4,7 +4,7 @@
 <meta name="baidu-site-verification" content="xdZ6LobkoN" />
   <meta charset="utf-8">
   
-  <title>[DIP] 2D Discrete Cosine, 2D Convolution | Amnesia&#39;s blog</title>
+  <title>[DIP] 2D Discrete Cosine, 2D Convolution, 2D Fourier Transform | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
   <meta name="description" content="">
@@ -12,7 +12,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="[DIP] 2D Discrete Cosine, 2D Convolution"/>
+  <meta property="og:title" content="[DIP] 2D Discrete Cosine, 2D Convolution, 2D Fourier Transform"/>
   <meta property="og:site_name" content="Amnesia&#39;s blog"/>
 
   
@@ -83,7 +83,7 @@
       
       
   
-    <h1 class="title">[DIP] 2D Discrete Cosine, 2D Convolution</h1>
+    <h1 class="title">[DIP] 2D Discrete Cosine, 2D Convolution, 2D Fourier Transform</h1>
   
 
     </header>
@@ -91,24 +91,9 @@
       
         <hr>
 <a id="more"></a>
-<p>Coursera课程<a href="https://class.coursera.org/digital-002" target="_blank" rel="external">Fundamentals of Digital Image and Video Processing</a>.</p>
+<p>Coursera课程<a href="https://class.coursera.org/digital-002" target="_blank" rel="external">Fundamentals of Digital Image and Video Processing</a>Week1,2,3的内容.</p>
 <h2 id="LSI系统里的2D_Discrete_Cosine">LSI系统里的2D Discrete Cosine</h2><p>之前一直没明白这图是个什么意思,原来它就是个简单的2D离散余弦信号..</p>
-<p><center><img src="/images/dct/dct1.png" width="700px"></center><br>信号是\(cos(\omega_1n_1 + \omega_2n_2)\),\(\omega\)是频率.图中白色代表1,黑色-1,灰色就是(-1, 1)之间的值.<br>比如左上角第一个图,\(\omega_1 = 0, \omega_2=0\),这时候信号是\(cos(0*n_1 + 0*n_2)\),即\(cos(0) = 1\),所以无论\(n_1, n_2\)取什么值,信号都是1.<br>第一行第二个图,\(\omega_1 = 0, \omega_2=\pi/8\)时,信号是\(cos(0*n_1 + \pi/8*n_2)\),周期是\(2\pi/\omega_2 = 16\),图上画了半个周期.<br>其他的都类似了.右下角最后一个,信号在\(n_1\)方向和\(n_2\)方向的周期都是2,在两个方向上都以1,-1交替.<br>这些小图片就是DCT的基底了.</p>
-<h2 id="2D_Convolution">2D Convolution</h2><p>一个脉冲信号经过一个Linear shift-invariant系统,输出叫做系统的脉冲响应.然后,一个信号经过一个LSI系统,系统的响应是这个信号和系统的脉冲响应做卷积的结果.就这张图了.</p>
-<p><center><img src="/images/dct/conv1.png" width="700px"></center><br>为什么是这样呢?因为..你&lt;&lt;信号系统&gt;&gt;忘光了..<br>首先,任何一个离散信号都可以表示成下式的卷积形式.</p>
-<p><center><img src="/images/dct/conv2.png" width="500px"></center><br>这个式子的意思就是信号分解,比如有一个信号是这个样子.即\(x(-1, 0) = 1, x(0, 0) = 2, x(1, 0) = 3,x(0, 1) = 4 \).</p>
-<p><center><img src="/images/dct/conv3.png" width="150px"></center><br>把它拆开看,就是这个图.原信号可以写成不同系数乘以不同位置的脉冲信号再求和的形式.这个系数就是函数值,或者说原信号在某个位置的值.</p>
-<p><center><img src="/images/dct/conv4.png"></center><br>所以把一个信号输入到LSI系统中做变换,可以写乘这个样子.\(x(k_1, k_2)\)可以看成是系数.</p>
-<p><center><img src="/images/dct/conv5.png"></center><br>这个系统可以看做只对脉冲信号\(\delta\)做了变换(由于是线性系统,系数x可以提到外边去).而对脉冲信号\(\delta\)做变换,系统的输出又叫做脉冲响应\(h\),于是这个式子就变成了原信号\(x\)和脉冲响应\(h\)卷积的形式.</p>
-<p><center><img src="/images/dct/conv6.png"></center></p>
-<h2 id="2D_Convolution-1">2D Convolution</h2><p>一个简单的例子.这两个信号做卷积.</p>
-<p><center><img src="/images/dct/conv7.png" width="500px"></center><br>第一步先把其中一个翻转reflection了.</p>
-<p><center><img src="/images/dct/conv8.png" width="500px"></center><br>然后选择\((n_1, n_2)\)的值,将两个信号重叠的部分累加起来,得到\(y(n_1, n_2)\)对应的值.</p>
-<p><center><img src="/images/dct/conv9.png" width="500px"></center></p>
-<p><center><img src="/images/dct/conv10.png" width="500px"></center></p>
-<p><center><img src="/images/dct/conv11.png" width="500px"></center></p>
-<p><center><img src="/images/dct/conv12.png" width="500px"></center></p>
-<p><center><img src="/images/dct/conv13.png" width="500px"></center><br>两个信号卷积之后的结果似乎比这两个信号都大一点.具体大多少?<br>比如\((R_1, P_1, Q_1)\), \((R_2, P_2, Q_2)\)是之前两个信号的左上角,左下角,右下角坐标,那卷积后的信号左上左下右下角坐标就是\((R_1+R_2, P_1+P_2, Q_1+Q_2)\).</p>
+<center><img src="/images/dct/dct1.png" width="700px"></center><br>信号是\(cos(\omega_1n_1 + \omega_2n_2)\),\(\omega\)是频率.图中白色代表1,黑色-1,灰色就是(-1, 1)之间的值.<br>比如左上角第一个图,\(\omega_1 = 0, \omega_2=0\),这时候信号是\(cos(0*n_1 + 0*n_2)\),即\(cos(0) = 1\),所以无论\(n_1, n_2\)取什么值,信号都是1.<br>第一行第二个图,\(\omega_1 = 0, \omega_2=\pi/8\)时,信号是\(cos(0*n_1 + \pi/8*n_2)\),周期是\(2\pi/\omega_2 = 16\),图上画了半个周期.<br>其他的都类似了.右下角最后一个,信号在\(n_1\)方向和\(n_2\)方向的周期都是2,在两个方向上都以1,-1交替.<br>这些小图片就是DCT的基底了.<br>##2D Convolution<br>一个脉冲信号经过一个Linear shift-invariant系统,输出叫做系统的脉冲响应.然后,一个信号经过一个LSI系统,系统的响应是这个信号和系统的脉冲响应做卷积的结果.就这张图了.<br><center><img src="/images/dct/conv1.png" width="700px"></center><br>为什么是这样呢?因为..你&lt;&lt;信号系统&gt;&gt;忘光了..<br>首先,任何一个离散信号都可以表示成下式的卷积形式.<br><center><img src="/images/dct/conv2.png" width="500px"></center><br>这个式子的意思就是信号分解,比如有一个信号是这个样子.即\(x(-1, 0) = 1, x(0, 0) = 2, x(1, 0) = 3,x(0, 1) = 4 \).<br><center><img src="/images/dct/conv3.png" width="150px"></center><br>把它拆开看,就是这个图.原信号可以写成不同系数乘以不同位置的脉冲信号再求和的形式.这个系数就是函数值,或者说原信号在某个位置的值.<br><center><img src="/images/dct/conv4.png"></center><br>所以把一个信号输入到LSI系统中做变换,可以写乘这个样子.\(x(k_1, k_2)\)可以看成是系数.<br><center><img src="/images/dct/conv5.png"></center><br>这个系统可以看做只对脉冲信号\(\delta\)做了变换(由于是线性系统,系数x可以提到外边去).而对脉冲信号\(\delta\)做变换,系统的输出又叫做脉冲响应\(h\),于是这个式子就变成了原信号\(x\)和脉冲响应\(h\)卷积的形式.<br><center><img src="/images/dct/conv6.png"></center><br>##2D Convolution<br>一个简单的例子.这两个信号做卷积.<br><center><img src="/images/dct/conv7.png" width="500px"></center><br>第一步先把其中一个翻转reflection了.<br><center><img src="/images/dct/conv8.png" width="500px"></center><br>然后选择\((n_1, n_2)\)的值,将两个信号重叠的部分累加起来,得到\(y(n_1, n_2)\)对应的值.<br><center><img src="/images/dct/conv9.png" width="500px"></center><br><center><img src="/images/dct/conv10.png" width="500px"></center><br><center><img src="/images/dct/conv11.png" width="500px"></center><br><center><img src="/images/dct/conv12.png" width="500px"></center><br><center><img src="/images/dct/conv13.png" width="500px"></center><br><center><img src="/images/dct/conv14.png" width="500px"></center><br>两个信号卷积之后的结果似乎比这两个信号都大一点.具体大多少?<br>比如\((R_1, P_1, Q_1)\), \((R_2, P_2, Q_2)\)是之前两个信号的左上角,左下角,右下角坐标,那卷积后的信号左上左下右下角坐标就是\((R_1+R_2, P_1+P_2, Q_1+Q_2)\).<br><br><br><strong>2D Fourier Transform</strong><br>式子.<br><center><img src="/images/dct/conv15.png" width="500px"></center><br>比如要求下图的傅里叶变换.<br><center><img src="/images/dct/conv16.png"></center><br>\(h(0, 0) = 0.204\),\(h(1, 0)\)和\(h(-1, 0)\)可以把复数抵消掉,其他位置也类似.<br><center><img src="/images/dct/conv17.png"></center><br><strong>Sampling</strong><br>上面的傅立叶变换是连续的,在频域.这当然还不够,必须要原信号离散,傅立叶变换也离散才行.<br>从连续到离散需要采样.首先对一个连续信号做傅立叶变化.如下图.<br><center><img src="/images/dct/conv18.png" width="500px"></center><br>然后对连续信号进行采样.<br><center><img src="/images/dct/conv19.png"></center><br>对采样点计算傅立叶变化,如下.这里面有两个比较重要的数,\(T_1, T_2\),这是spatial domain的采样周期,式子中的\(\Omega_1T_1\)和\(\Omega_2T_2\)即以前的\(\omega_1\)和\(\omega_2\),\(\Omega\)叫做normalized frequency,单位\(radius/mm\),\(T\)是spatial上的采样周期,单位是mm.反映到频域上,就会发现采样点的傅立叶变换是连续信号傅立叶变换的周期延展,周期是\(2\pi/T_1\)和\(2\pi/T_2\).<br><center><img src="/images/dct/conv20.png" width="500px"></center><br>T的大小会直接影响频域信息,T太小无用,T太大则会混叠导致不能恢复信号,这也就是Nyquist定律说的了.<br><center><img src="/images/dct/conv21.png" width="500px"></center><br><center><img src="/images/dct/conv22.png" width="500px"></center><br>现在频域还是连续的.对频域采样,对应回spatial domain,又变成周期的了,和刚开始的对连续信号进行采样,得到了周期的频域信号一样.同样,在频域的过采样和欠采样也会对应到spatial domain上,欠采样会造成混叠.如下图.周期的离散信号和周期的频域离散信号对应这傅立叶级数,而一个周期的离散信号和一个周期的频域离散信号就是离散傅立叶变换了.<br><center><img src="/images/dct/conv23.png" width="500px"></center>
 
       
     </div>
