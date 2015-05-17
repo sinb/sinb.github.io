@@ -101,7 +101,15 @@
 <p><center><img src="/images/dct/conv4.png"></center><br>所以把一个信号输入到LSI系统中做变换,可以写乘这个样子.\(x(k_1, k_2)\)可以看成是系数.</p>
 <p><center><img src="/images/dct/conv5.png"></center><br>这个系统可以看做只对脉冲信号\(\delta\)做了变换(由于是线性系统,系数x可以提到外边去).而对脉冲信号\(\delta\)做变换,系统的输出又叫做脉冲响应\(h\),于是这个式子就变成了原信号\(x\)和脉冲响应\(h\)卷积的形式.</p>
 <p><center><img src="/images/dct/conv6.png"></center></p>
-<h2 id="2D_Convolution-1">2D Convolution</h2>
+<h2 id="2D_Convolution-1">2D Convolution</h2><p>一个简单的例子.这两个信号做卷积.</p>
+<p><center><img src="/images/dct/conv7.png" width="500px"></center><br>第一步先把其中一个翻转reflection了.</p>
+<p><center><img src="/images/dct/conv8.png" width="500px"></center><br>然后选择\((n_1, n_2)\)的值,将两个信号重叠的部分累加起来,得到\(y(n_1, n_2)\)对应的值.</p>
+<p><center><img src="/images/dct/conv9.png" width="500px"></center></p>
+<p><center><img src="/images/dct/conv10.png" width="500px"></center></p>
+<p><center><img src="/images/dct/conv11.png" width="500px"></center></p>
+<p><center><img src="/images/dct/conv12.png" width="500px"></center></p>
+<p><center><img src="/images/dct/conv13.png" width="500px"></center><br>两个信号卷积之后的结果似乎比这两个信号都大一点.具体大多少?<br>比如\((R_1, P_1, Q_1)\), \((R_2, P_2, Q_2)\)是之前两个信号的左上角,左下角,右下角坐标,那卷积后的信号左上左下右下角坐标就是\((R_1+R_2, P_1+P_2, Q_1+Q_2)\).</p>
+
       
     </div>
     <footer>
