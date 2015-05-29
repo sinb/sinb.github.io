@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="baidu-site-verification" content="xdZ6LobkoN" />
+  <meta charset="utf-8">
+  
+  <title>[Algorithms笔记] 归并,选择,插入,希尔,算法稳定性,计算复杂度 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="Coursera课程Algorithms, Part IWeek2, 3内容.
+归并排序一共3个步骤:
+
+将数组分成两部分.
+递归地对这两部分分别排序(即对这两部分再分).
+将两个排好序的部分合并.主要算法就是合并这一步,需要借助一个auxiliary数组和3个位置指针.auxiliary从原数组里">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[Algorithms笔记] 归并,选择,插入,希尔,算法稳定性,计算复杂度"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/css/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Courseranote">Coursera笔记</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-05-25T03:07:21.000Z"><a href="/Courseranote/merge-sort/">2015-05-25</a></time>
+      
+      
+  
+    <h1 class="title">[Algorithms笔记] 归并,选择,插入,希尔,算法稳定性,计算复杂度</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <a id="more"></a>
+<p>Coursera课程<a href="https://www.coursera.org/course/algs4partI" target="_blank" rel="external">Algorithms, Part I</a>Week2, 3内容.</p>
+<h2 id="归并排序">归并排序</h2><p>一共3个步骤:</p>
+<ul>
+<li>将数组分成两部分.</li>
+<li>递归地对这两部分分别排序(即对这两部分再分).</li>
+<li>将两个排好序的部分合并.<br>主要算法就是合并这一步,需要借助一个auxiliary数组和3个位置指针.auxiliary从原数组里复制一份出来,i,j记录两部分起始位置,k作为往进填写的计数器.比较i,j位置上数的大小,把小的填入k,再更新位置.<center><img src="/images/merge/mer1.png" width="500px"></center><br>一次排序的执行顺序是这样的.<br><center><img src="/images/merge/mer2.png" width="500px"></center><br>归并排序的排序发生在合并这一步.对小的子数组,也就是递归到较小的子数组的时候,可以不用归并排序的递归方法来处理的,这时因为子数组很小,可以使用插入排序来处理这个小的子数组.<br><center><img src="/images/merge/mer23.png" width="500px"></center><br>还有一种称为自底向上的归并排序,不需要进行递归,而是经过很多次遍历,每次遍历归并的组的大小乘以2.<br>比如第一轮只归并相邻两个元素,第二轮4个,第三轮8个.这样需要经过logN轮,每轮归并比较N次,总的时间复杂度基本上还是\(Nlog(N)\).<br><center><img src="/images/merge/mer3.png" width="500px"></center>
+</li>
+</ul>
+<hr>
+<h2 id="计算复杂度">计算复杂度</h2><p>之前的\(Nlog(N)\)是指算法需要的操作数的上界,算法还需要证明其有一个下界,表明对一个问题的操作数的下限.上界和下界同一数量级的算法是最优算法.比如对排序问题,要求它的下界,需要用到决策树.</p>
+<center><img src="/images/merge/mer4.png" width="500px"></center><br>对3个数a,b,c排序,决策树也就是不断提问,问完所有的可能顺序.每个叶子表示一种可能性.<br><center><img src="/images/merge/mer5.png" width="500px"></center><br>对一个高度h的树(即最多经过h次提问便得到结果,也即h次操作),最多有\(2^h\)个叶子,它大于等于决策树上的叶子数目.对N个数的排序,最多有N!种顺序,所以决策树上最少有N!个叶子.这样可以得到排序问题的下限\(Nlog(N)\).<br><center><img src="/images/merge/mer6.png"></center><br>从比较次数来看,因为归并排序的复杂度上界和下界一样,所以它是最优算法,但从空间使用来看不是,因为它需要多用一个auxiliary数组.<br><br><font size="4">使用Comparators  </font><br><br>有时候需要多种排序规则,比如字符串数组,可以忽略大小写排序,也可以考虑大小写.这时应该使用Comparator接口.<br>需要几种比较方法,就实现几个使用Comparator接口的内部类,然后实现compare方法.<br><center><img src="/images/merge/mer7.png" width="500px"></center><br>排序的时候把Comparator的对象传进去,使用它的compare方法.<br><center><img src="/images/merge/mer8.png" width="500px"></center>
+
+<hr>
+<h2 id="使用Comparable">使用Comparable</h2><p>让排序算法对不同的类型都能进行排序,还可以使用Comparable接口.String,Integer已经使用了Comparable接口.<br>使用方法是,定义类时使用Comparable,实现compareTo方法.<br>参考<a href="http://blog.csdn.net/mageshuai/article/details/3849143" target="_blank" rel="external">http://blog.csdn.net/mageshuai/article/details/3849143</a>.</p>
+<center><img src="/images/merge/mer9.png" width="500px"></center><br><center><img src="/images/merge/mer10.png" width="500px"></center>
+
+<hr>
+<h2 id="其他几种排序">其他几种排序</h2><h3 id="选择排序">选择排序</h3><p>选择排序,每次从数组里寻找最小的元素交换到最前面(前面那些已经选出来的小元素已经从小到大排列了,不需要动它们).</p>
+<center><img src="/images/merge/mer11.png"></center><br>就是每次循环的起始位置往后移.<br><center><img src="/images/merge/mer12.png"></center><br><center><img src="/images/merge/mer13.png" width="500px"></center>
+
+<h3 id="插入排序">插入排序</h3><p>每次把当前元素与它左边的元素比较,如果小就交换.这样每次循环中,当前元素的左边都是排好序的.</p>
+<center><img src="/images/merge/mer14.png"></center><br><center><img src="/images/merge/mer15.png"></center><br><center><img src="/images/merge/mer16.png" width="500px"></center><br>插入排序的最好与最坏情况下需要比较操作的次数.<br><center><img src="/images/merge/mer17.png" width="500px"></center><br>平均下来就是\(1/4*N^2\).<br>插入排序有意思的地方是,如果数组是部分排序的,那么插入排序执行时间只是线性增长.<br>部分排序的定义:<br><center><img src="/images/merge/mer18.png" width="500px"></center><br>由于插入排序的这个性质,稍微改改就变成了一个更快的排序—-Shell排序.<br><br><font size="4">希尔排序</font><br><br>插入排序中,当前元素只和它前一个元素比较,这样每次只能移动一个位置.希尔排序执行好多组插入排序,但是每组中,当前元素可以和它之前的第h个元素比较交换,这个叫做h-sorting.<br>这个例子里,先做7-sort,再3-sort,最后1-sort.最后的1-sort就和插入排序是一样的,所以能够得到完全的排序序列,但是由于1-sort处理的数组已经部分排序了,所以它很快.<br><center><img src="/images/merge/mer19.png" width="500px"></center><br>希尔排序的理论依据:一个g-sorted的数组经过h-sort之后依然保持g-sorted.<br>如何确定步长?也就是先7,再3,再1?Knuth提出的方法是使用3x+1这个序列.<br><center><img src="/images/merge/mer20.png" width="500px"></center>
+
+<h2 id="排序算法的稳定性">排序算法的稳定性</h2><p>有些需要排序的item有很多属性.下图中首先按照时间排序,再按照地名排序.中间的结果虽然按照地名排序了,但是以前按照时间排的序乱掉了.<br>右边的结果保留了按时间排序.右边的方法称为稳定的排序.<br>A stable sort preserves the relative order of items with equal keys.</p>
+<p><center><img src="/images/merge/mer21.png" width="500px"></center><br>判断一个排序算法是否稳定,是看排序过程中是否会交换相同属性的元素的位置.<br>插入排序是稳定的,它每次和相邻的元素比较,只有比相邻元素小时才会发生交换.选择排序是不稳定的,它会发生将相同属性的元素移动的步骤,比如下图,B1,B2相同大小,A比B1,B2小,所以会将B1和A交换,从而B1,B2位置改变.</p>
+<p><center><img src="/images/merge/mer22.png"></center><br>希尔排序是不稳定的,它会发生长距离的两个元素交换, Long-distance exchange might move an item past some equal item.<br>归并排序是稳定的,因为它的合并这一步稳定(合并时碰到两个元素相同的情况总是取左边的元素).</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Courseranote/">Courseranote</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Algorithms/">Algorithms</a>, <a href="/tags/CS-Foundation/">CS Foundation</a>, <a href="/tags/Coursera/">Coursera</a>, <a href="/tags/排序/">排序</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"sinb"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Courseranote/">Courseranote</a><small>3</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>17</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Algorithms/">Algorithms</a><small>2</small></li>
+  
+    <li><a href="/tags/CNN/">CNN</a><small>2</small></li>
+  
+    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>2</small></li>
+  
+    <li><a href="/tags/Convolution/">Convolution</a><small>1</small></li>
+  
+    <li><a href="/tags/Cosine/">Cosine</a><small>1</small></li>
+  
+    <li><a href="/tags/Coursera/">Coursera</a><small>2</small></li>
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/DCT/">DCT</a><small>1</small></li>
+  
+    <li><a href="/tags/DFT/">DFT</a><small>1</small></li>
+  
+    <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
+  
+    <li><a href="/tags/Imagenet/">Imagenet</a><small>1</small></li>
+  
+    <li><a href="/tags/MATLAB/">MATLAB</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Paper/">Paper</a><small>3</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/吉他/">吉他</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/排序/">排序</a><small>1</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/最近/">最近</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+    <li><a href="/tags/电影/">电影</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+</body>
+</html>
