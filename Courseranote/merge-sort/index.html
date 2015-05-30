@@ -96,7 +96,7 @@
 <ul>
 <li>将数组分成两部分.</li>
 <li>递归地对这两部分分别排序(即对这两部分再分).</li>
-<li>将两个排好序的部分合并.<br>主要算法就是合并这一步,需要借助一个auxiliary数组和3个位置指针.auxiliary从原数组里复制一份出来,i,j记录两部分起始位置,k作为往进填写的计数器.比较i,j位置上数的大小,把小的填入k,再更新位置.<center><img src="/images/merge/mer1.png" width="500px"></center><br>一次排序的执行顺序是这样的.<br><center><img src="/images/merge/mer2.png" width="500px"></center><br>归并排序的排序发生在合并这一步.对小的子数组,也就是递归到较小的子数组的时候,可以不用归并排序的递归方法来处理的,这时因为子数组很小,可以使用插入排序来处理这个小的子数组.<br><center><img src="/images/merge/mer23.png" width="500px"></center><br>还有一种称为自底向上的归并排序,不需要进行递归,而是经过很多次遍历,每次遍历归并的组的大小乘以2.<br>比如第一轮只归并相邻两个元素,第二轮4个,第三轮8个.这样需要经过logN轮,每轮归并比较N次,总的时间复杂度基本上还是\(Nlog(N)\).<br><center><img src="/images/merge/mer3.png" width="500px"></center>
+<li>将两个排好序的部分合并.<br>主要算法就是合并这一步,需要借助一个auxiliary数组和3个位置指针.auxiliary从原数组里复制一份出来,i,j记录两部分起始位置,k作为往进填写的计数器.比较i,j位置上数的大小,把小的填入k,再更新位置.<center><img src="/images/merge/mer1.png" width="500px"></center><br><center><img src="/images/merge/mer24.png" width="500px"></center><br>一次排序的执行顺序是这样的.<br><center><img src="/images/merge/mer2.png" width="500px"></center><br>归并排序的排序发生在合并这一步.对小的子数组,也就是递归到较小的子数组的时候,可以不用归并排序的递归方法来处理的,这时因为子数组很小,可以使用插入排序来处理这个小的子数组.<br><center><img src="/images/merge/mer23.png" width="500px"></center><br>还有一种称为自底向上的归并排序,不需要进行递归,而是经过很多次遍历,每次遍历归并的组的大小乘以2.<br>比如第一轮只归并相邻两个元素,第二轮4个,第三轮8个.这样需要经过logN轮,每轮归并比较N次,总的时间复杂度基本上还是\(Nlog(N)\).<br><center><img src="/images/merge/mer3.png" width="500px"></center>
 </li>
 </ul>
 <hr>
@@ -175,7 +175,7 @@ var duoshuoQuery = {short_name:"sinb"};
   
     <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
   
-    <li><a href="/categories/Courseranote/">Courseranote</a><small>3</small></li>
+    <li><a href="/categories/Courseranote/">Courseranote</a><small>4</small></li>
   
     <li><a href="/categories/Life/">Life</a><small>6</small></li>
   
@@ -190,17 +190,17 @@ var duoshuoQuery = {short_name:"sinb"};
   <h3 class="title">標籤</h3>
   <ul class="entry">
   
-    <li><a href="/tags/Algorithms/">Algorithms</a><small>2</small></li>
+    <li><a href="/tags/Algorithms/">Algorithms</a><small>3</small></li>
   
     <li><a href="/tags/CNN/">CNN</a><small>2</small></li>
   
-    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>2</small></li>
+    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>3</small></li>
   
     <li><a href="/tags/Convolution/">Convolution</a><small>1</small></li>
   
     <li><a href="/tags/Cosine/">Cosine</a><small>1</small></li>
   
-    <li><a href="/tags/Coursera/">Coursera</a><small>2</small></li>
+    <li><a href="/tags/Coursera/">Coursera</a><small>3</small></li>
   
     <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
   
@@ -234,7 +234,7 @@ var duoshuoQuery = {short_name:"sinb"};
   
     <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
   
-    <li><a href="/tags/排序/">排序</a><small>1</small></li>
+    <li><a href="/tags/排序/">排序</a><small>2</small></li>
   
     <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
   

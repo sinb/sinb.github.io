@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="baidu-site-verification" content="xdZ6LobkoN" />
+  <meta charset="utf-8">
+  
+  <title>[Algorithms笔记] 快速排序 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[Algorithms笔记] 快速排序"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/css/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Courseranote">Coursera笔记</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-05-30T11:43:10.000Z"><a href="/Courseranote/quick-sort/">2015-05-30</a></time>
+      
+      
+  
+    <h1 class="title">[Algorithms笔记] 快速排序</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <hr>
+<a id="more"></a>
+<h2 id="快速排序">快速排序</h2><p>归并排序最重要的一步是合并merge,快速排序最重要的一步称为partition.<br>Partition是指,随便给一个元素,找到它在整个数组中正确的位置,即在这个位置上,它左边的元素都小于它,右边的元素都大于它.这就是一个元素的正确位置,整个数组排好序后,它还是在这个位置.快速排序就是建立在这个操作上.<br>先把数组随机打乱,将第一个元素(下标low)作为需要寻找位置的元素,然后用一前一后两个移动指针i,j来寻找位置.<br>i从左往右,如果a[i]比a[lo]大,就应该停下,因为我们希望的是正确位置左边全比a[lo]小,右边全比a[lo]大,现在a[i]比a[lo]大了,一会肯定要交换到右边去.</p>
+<center><img src="/images/quick/q1.png" width="500px"></center><br>j从右往左,碰到a[j]小于a[lo]的停下.<br><center><img src="/images/quick/q2.png" width="500px"></center><br>交换a[i], a[j],这样就保证了正确位置左边全小,右边全大(只是我们还没有找到正确位置,还需要接着移动i,j)<br><center><img src="/images/quick/q3.png" width="500px"></center><br><center>i,j移动</center><br><center><img src="/images/quick/q6.png" width="500px"></center><br>知道i,j交叉了,就是i比j大,就该停止了.<br><center><img src="/images/quick/q4.png" width="500px"></center><br>这时候交换a[lo]和a[j],刚开始那个元素a[lo]就到了它正确的位置.<br><center><img src="/images/quick/q5.png" width="500px"></center><br><center><img src="/images/quick/q7.png" width="500px"></center><br>之后就是递归地使用partition了.<br><center><img src="/images/quick/q8.png" width="500px"></center><br>一次快速排序的执行顺序是这样的.随机打乱,进行第一次partition,把a[0]放到合适的位置,然后以这个位置为分割,变成两部分,分别对这两部分进行快速排序.<br><center><img src="/images/quick/q9.png" width="500px"></center><br>快排里需要注意的地方很多,比如partition这一步很明显有长距离的元素互换,这样算法就不是稳定的(参考<a href="http://sinb.github.io/Courseranote/merge-sort/" target="_blank" rel="external">上篇</a>).可以通过增加一个数组的方式来帮助partition更容易,但这样其实开销大.然后如果有数组中有相同大小的元素,如果处理不好快排会变成慢排.还有就是第一步的随机打乱很重要.<br>快排的best-case需要NlogN次比较操作.它有个反人类的特点就是,如果输入的是一个已经排好序的数组,这个会成它的worst-case,需要\(1/2*N^2\)次比较,因为元素都在正确的位置,partition这一步要不停的比较直到cross.好在算法开始时的随机打乱使得这种情况不不太可能会出现.<br><br><font size="4">改进  </font><br><hr><br>合归并排序一样,当递归迭代很深层时,对于已经分割的很小的数组可以不用再递归了,直接使用插入排序处理它们.<br><center><img src="/images/quick/q10.png" width="500px"></center><br>还有当第一次分割越是将数组对半分,快排效果越好,就是第一个partition的元素最好的在排好序的数组的中间.所以可以不取第一个元素作为partition的元素(对于随机打乱的数组,第一个元素平均下来其实也是中间的元素),而是采样3个元素(第一个,中间,最后一个),求它们的中值(不太懂).<br><br><font size="5">快速查找</font><br><hr><br>给一个数组,怎么找到第k大的元素?比如最小的元素是第0大,最大的是第N-1大,中间的是第N/2大.可以直接对数组排序,然后找就行了.但是这样用最好的排序方法也需要NlogN.使用快排里的partition,可以使查找算法的计算复杂度变为线性.<br>想法很简单,首先随机打乱,然后分割,第一次分割可以得到一个元素的正确位置j,并把数组分成j前和j后两部分,这个j实际上就是第j大的元素.然后根据我们要找的第k大元素k,只在j的一边继续partition就行了.<br><center><img src="/images/quick/q11.png" width="700px"></center><br><font size="5">排序算法总结</font><br><hr><br>复杂度二次函数的就不要用了,除了插入排序,在小数组或者部分排序的情况下可以用.<br>希尔排序是插入排序的升级版,平均操作数目和最多操作书居然是问号..<br>归并排序又快又有稳定性,只是需要一个额外的辅助数组.<br>快排算是最好的了.<br>不,最好的holy sorting grail还是未知的..但排序算法的下限我们已经知道了是NlogN.<br><center><img src="/images/quick/q12.png" width="700px"></center>
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Courseranote/">Courseranote</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Algorithms/">Algorithms</a>, <a href="/tags/CS-Foundation/">CS Foundation</a>, <a href="/tags/Coursera/">Coursera</a>, <a href="/tags/排序/">排序</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"sinb"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>6</small></li>
+  
+    <li><a href="/categories/Courseranote/">Courseranote</a><small>4</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>17</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Algorithms/">Algorithms</a><small>3</small></li>
+  
+    <li><a href="/tags/CNN/">CNN</a><small>2</small></li>
+  
+    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>3</small></li>
+  
+    <li><a href="/tags/Convolution/">Convolution</a><small>1</small></li>
+  
+    <li><a href="/tags/Cosine/">Cosine</a><small>1</small></li>
+  
+    <li><a href="/tags/Coursera/">Coursera</a><small>3</small></li>
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/DCT/">DCT</a><small>1</small></li>
+  
+    <li><a href="/tags/DFT/">DFT</a><small>1</small></li>
+  
+    <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
+  
+    <li><a href="/tags/Imagenet/">Imagenet</a><small>1</small></li>
+  
+    <li><a href="/tags/MATLAB/">MATLAB</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Paper/">Paper</a><small>3</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/吉他/">吉他</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/排序/">排序</a><small>2</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/最近/">最近</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+    <li><a href="/tags/电影/">电影</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+</body>
+</html>
