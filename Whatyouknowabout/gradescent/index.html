@@ -7,8 +7,7 @@
   <title>梯度下降找方程参数? | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="机器学习里边,梯度下降用来寻找模型参数.其实它就是在寻找方程的系数,什么方程?能量函数.今天使用形式简单的函数来验证一下,是不是所有形式的方程都能顺利地用梯度下降求解.
-线性函数这个其实都不用验证,这就是线性回归嘛.不过还是按照从简单到复杂一步步来吧.有这么一个线性函数y=Ax+B,参数A和B就用t">
+  <meta name="description" content="">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -90,7 +89,8 @@
     </header>
     <div class="entry">
       
-        <a id="more"></a>
+        <hr>
+<a id="more"></a>
 <p>机器学习里边,梯度下降用来寻找模型参数.其实它就是在寻找方程的系数,什么方程?能量函数.今天使用形式简单的函数来验证一下,是不是所有形式的方程都能顺利地用梯度下降求解.</p>
 <h3 id="线性函数">线性函数</h3><p>这个其实都不用验证,这就是线性回归嘛.不过还是按照从简单到复杂一步步来吧.<br>有这么一个线性函数y=Ax+B,参数A和B就用theta表示了.要用梯度下降拟合参数需要知道两个东西,能量函数和能量函数对于theta的偏导,下面两个函数就做的这个事.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% linearFunc.m</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">y</span> = <span class="title">linearFunc</span><span class="params">(x, theta)</span></span></span><br><span class="line"><span class="comment">% y = Ax+B</span></span><br><span class="line"><span class="comment">%%</span></span><br><span class="line">    y = theta(<span class="number">1</span>)*x + theta(<span class="number">2</span>);</span><br><span class="line">    </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% linearFuncCost.m 返回能量以及梯度</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[J, grad]</span> = <span class="title">linearFuncCost</span><span class="params">(theta, x, y)</span></span></span><br><span class="line">    J = sum( (theta(<span class="number">1</span>)*x + theta(<span class="number">2</span>) - y).^<span class="number">2</span>); <span class="comment">%能量函数,这里为了简单问题没有对m个样本进行归一化,</span></span><br><span class="line">					<span class="comment">%因为我们只是寻找方程参数,并不是线性回归要考虑到样本个数.</span></span><br><span class="line">    grad = <span class="built_in">zeros</span>(<span class="built_in">size</span>(theta));</span><br><span class="line">    grad(<span class="number">1</span>) = sum(<span class="number">2</span>*(theta(<span class="number">1</span>)*x + theta(<span class="number">2</span>) - y) .* x); <span class="comment">%两个偏导</span></span><br><span class="line">    grad(<span class="number">2</span>) = sum(<span class="number">2</span>*(theta(<span class="number">1</span>)*x + theta(<span class="number">2</span>) - y));</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
