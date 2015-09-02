@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="baidu-site-verification" content="xdZ6LobkoN" />
+  <meta charset="utf-8">
+  
+  <title>尝试做出超级玛丽风格的画..失败 | Amnesia&#39;s blog</title>
+  <meta name="author" content="Amnesia">
+  
+  <meta name="description" content="">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="尝试做出超级玛丽风格的画..失败"/>
+  <meta property="og:site_name" content="Amnesia&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/css/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Amnesia&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-54965599-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Amnesia&#39;s blog</a></h1>
+  <h2><a href="/">I&#39;ll be your mirror</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/categories/Life">生活</a></li>
+    
+      <li><a href="/categories/Whatyouknowabout">科普</a></li>
+    
+      <li><a href="/categories/Courseranote">Coursera笔记</a></li>
+    
+      <li><a href="/categories/Artworks">Artworks</a></li>
+    
+      <li><a href="/links">友链</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	
+  <script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.min.js" type="text/javascript"></script> 
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-09-02T13:38:03.000Z"><a href="/Artworks/nescolormap/">2015-09-02</a></time>
+      
+      
+  
+    <h1 class="title">尝试做出超级玛丽风格的画..失败</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <hr>
+<a id="more"></a>
+<p>昨晚回去路上看了知乎日报上<a href="http://daily.zhihu.com/story/7078317" target="_blank" rel="external">小时候那种插卡玩的游戏机，原来是这么呈现出来的</a>,才知道原来FC游戏上只用了64种颜色,而且还有几个是重复的.<br>之前我试过做像素化(当时我觉得那种风格叫做像素化),方法很简单,把一张图分成相邻的小方块,只从这个方块里采样一个点,用这个点的RGB作为这个小方块的RGB,这样做出来其实有那么些意思.</p>
+<p><center><img src="/images/nescmap/1.png" width="300px"></center><center><img src="/images/nescmap/3.png" width="300px"></center><center><img src="/images/nescmap/2.png" width="300px"></center></p>
+<p>看了那个文章之后才知道我用的色彩太多了,应该先减少颜色.一查才知道原来MATLAB的colormap就是color palette,MATLAB把使用color palette的图片叫做indexed image,就是每个像素位置存了一个索引,用这个索引在color map里找出对应的RGB.</p>
+<p>第一步是减少颜色. MATLAB可以把普通的RGB图片转换成indexed image,并且可以选择生成的color map的大小,也就是使用颜色的个数.我把RGB转成了有55中颜色的indexed image.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">I = imread(<span class="string">'pixel1.jpg'</span>);</span><br><span class="line"><span class="matrix">[IND,map]</span> = rgb2ind(I,<span class="number">55</span>);</span><br></pre></td></tr></table></figure></p>
+<p>转完之后是这个样子.</p>
+<p><center><img src="/images/nescmap/4.png" width="300px"></center></p>
+<p>NES的color map是这样<br><center><img src="/images/nescmap/5.png"></center></p>
+<p>查到了<a href="http://www.thealmightyguru.com/Games/Hacking/Wiki/index.php?title=NES_Palette" target="_blank" rel="external">NES的color map对应的RGB</a>,直接放进去.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nes_cmap = <span class="matrix">[</span><br><span class="line"><span class="number">124</span>,<span class="number">124</span>,<span class="number">124</span>;</span><br><span class="line"><span class="number">0</span>,<span class="number">0</span>,<span class="number">252</span>;</span><br><span class="line"><span class="number">0</span>,<span class="number">0</span>,<span class="number">188</span>;</span><br><span class="line"><span class="number">68</span>,<span class="number">40</span>,<span class="number">188</span>;</span><br><span class="line"><span class="number">148</span>,<span class="number">0</span>,<span class="number">132</span>;</span><br><span class="line"><span class="number">168</span>,<span class="number">0</span>,<span class="number">32</span>;</span><br><span class="line">......................................</span><br><span class="line">]</span></span><br></pre></td></tr></table></figure></p>
+<p>然后我的想法是换color map,就是把这张图片的55个颜色换成NES的55个颜色.具体怎么换我不知道,直觉上虽然现在的到的这两个color map不一样,但至少相似的颜色对应的向量距离会比较小吧?那就对现在图片的color map中的每一个颜色,在NES color map中找一个距离最短的换上.然后事实证明我太天真了.这样换完color map是这样.</p>
+<p><center><img src="/images/nescmap/6.png" width="300px"></center></p>
+<p>天怎么都红了呢…..哎接着做看最后效果吧.</p>
+<p>接着是像素化.以前是用小方块产生出像素块的感觉,在MATLAB里面这么做有点不知道怎么办.MATLAB里面有个imresize,可以缩放图片,我想如果先缩小图片,再放大到原来的尺寸,这个函数放大时应该是会选择附近点的RGB作为填充,这样就能像素化了吧.试了试果然可行.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% 先缩小5倍再放大5倍</span></span><br><span class="line"><span class="matrix">[Y, newmap]</span> = imresize(IND, newmap, <span class="number">0.2</span>);</span><br><span class="line"><span class="matrix">[Z, newnewmap]</span> = imresize(Y, newmap, <span class="number">5</span>,<span class="string">'nearest'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>最终结果是这样,虽然失真的不成样子,但我觉得还挺好看的…</p>
+<p><center><img src="/images/nescmap/7.png" width="300px"><br>有种玩着玩着电视机坏掉的感觉..</center></p>
+<p><center><img src="/images/nescmap/8.png" width="300px"></center></p>
+<p>总之是失败了..我在google play上搜到了一个这样的app,8Bit Photo Lab,效果很棒..就是不知道是怎么做的.求教程..</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Artworks/">Artworks</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/FC/">FC</a>, <a href="/tags/NES/">NES</a>, <a href="/tags/超级玛丽/">超级玛丽</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"sinb"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:sinb.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Artworks/">Artworks</a><small>7</small></li>
+  
+    <li><a href="/categories/Courseranote/">Courseranote</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Whatyouknowabout/">Whatyouknowabout</a><small>20</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Algorithms/">Algorithms</a><small>4</small></li>
+  
+    <li><a href="/tags/CNN/">CNN</a><small>2</small></li>
+  
+    <li><a href="/tags/CS-Foundation/">CS Foundation</a><small>4</small></li>
+  
+    <li><a href="/tags/Convolution/">Convolution</a><small>1</small></li>
+  
+    <li><a href="/tags/Cosine/">Cosine</a><small>1</small></li>
+  
+    <li><a href="/tags/Coursera/">Coursera</a><small>4</small></li>
+  
+    <li><a href="/tags/DBN/">DBN</a><small>1</small></li>
+  
+    <li><a href="/tags/DCT/">DCT</a><small>1</small></li>
+  
+    <li><a href="/tags/DFT/">DFT</a><small>1</small></li>
+  
+    <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
+  
+    <li><a href="/tags/FC/">FC</a><small>1</small></li>
+  
+    <li><a href="/tags/FC-NES-超级玛丽/">FC, NES, 超级玛丽</a><small>0</small></li>
+  
+    <li><a href="/tags/HMM/">HMM</a><small>1</small></li>
+  
+    <li><a href="/tags/Imagenet/">Imagenet</a><small>1</small></li>
+  
+    <li><a href="/tags/MATLAB/">MATLAB</a><small>1</small></li>
+  
+    <li><a href="/tags/MNIST/">MNIST</a><small>1</small></li>
+  
+    <li><a href="/tags/NES/">NES</a><small>1</small></li>
+  
+    <li><a href="/tags/PCA/">PCA</a><small>1</small></li>
+  
+    <li><a href="/tags/Paper/">Paper</a><small>3</small></li>
+  
+    <li><a href="/tags/Processing/">Processing</a><small>5</small></li>
+  
+    <li><a href="/tags/Theano/">Theano</a><small>1</small></li>
+  
+    <li><a href="/tags/UFLDL/">UFLDL</a><small>7</small></li>
+  
+    <li><a href="/tags/Viterbi/">Viterbi</a><small>1</small></li>
+  
+    <li><a href="/tags/WeekEnd/">WeekEnd</a><small>1</small></li>
+  
+    <li><a href="/tags/fft/">fft</a><small>1</small></li>
+  
+    <li><a href="/tags/优先队列/">优先队列</a><small>0</small></li>
+  
+    <li><a href="/tags/分词/">分词</a><small>1</small></li>
+  
+    <li><a href="/tags/吉他/">吉他</a><small>1</small></li>
+  
+    <li><a href="/tags/喝酒/">喝酒</a><small>1</small></li>
+  
+    <li><a href="/tags/堆排序/">堆排序</a><small>0</small></li>
+  
+    <li><a href="/tags/排序/">排序</a><small>2</small></li>
+  
+    <li><a href="/tags/最小二乘/">最小二乘</a><small>1</small></li>
+  
+    <li><a href="/tags/最近/">最近</a><small>1</small></li>
+  
+    <li><a href="/tags/树/">树</a><small>1</small></li>
+  
+    <li><a href="/tags/梯度下降/">梯度下降</a><small>1</small></li>
+  
+    <li><a href="/tags/演出/">演出</a><small>1</small></li>
+  
+    <li><a href="/tags/爬虫/">爬虫</a><small>1</small></li>
+  
+    <li><a href="/tags/电影/">电影</a><small>2</small></li>
+  
+    <li><a href="/tags/超级玛丽/">超级玛丽</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Amnesia
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+</body>
+</html>
