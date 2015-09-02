@@ -4,16 +4,15 @@
 <meta name="baidu-site-verification" content="xdZ6LobkoN" />
   <meta charset="utf-8">
   
-  <title>大河之上 | Amnesia&#39;s blog</title>
+  <title>给我妈写爬虫 | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="昨天中秋,野孩子2014巡演回到了故乡兰州,演出前第一句问候:你们都来劳,牛肉面吃了吗.
-演出选在一个剧院.和十几年前的演出不同了,现在野孩子的现场没有冒着烟的观众和满地的酒瓶子,如今张佺已经被民谣圈内人士视为大师,张玮玮和郭龙的事业也很成功(演出结束时还有二货在后面喊织毛衣!李伯伯!),另外新加入">
+  <meta name="description" content="">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="大河之上"/>
+  <meta property="og:title" content="给我妈写爬虫"/>
   <meta property="og:site_name" content="Amnesia&#39;s blog"/>
 
   
@@ -80,22 +79,23 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2014-09-09T11:43:57.000Z"><a href="/Life/wild-children/">2014-09-09</a></time>
+        <time datetime="2015-09-02T09:38:36.000Z"><a href="/Life/spiderswf/">2015-09-02</a></time>
       
       
   
-    <h1 class="title">大河之上</h1>
+    <h1 class="title">给我妈写爬虫</h1>
   
 
     </header>
     <div class="entry">
       
-        <p><a href="" target="_blank"><img src="/images/20140908.jpg" height="400/"></a></p>
-<p>昨天中秋,野孩子2014巡演回到了故乡兰州,演出前第一句问候:你们都来劳,牛肉面吃了吗.</p>
-<p>演出选在一个剧院.和十几年前的演出不同了,现在野孩子的现场没有冒着烟的观众和满地的酒瓶子,如今张佺已经被民谣圈内人士视为大师,张玮玮和郭龙的事业也很成功(演出结束时还有二货在后面喊织毛衣!李伯伯!),另外新加入一位吉他手和一个现场打击手,算是自小索走后最完整的野孩子阵容.</p>
-<p>歌还是老歌,听不懂的歌词依然听不懂,能打动我的也差点又让我流泪.没有朋友的上海城,云南的水干了,喜欢秋天的人啊,喝上一口黄河水,你可知道那杜鹃花儿嘛红,唱过的人他不用说出来.几年前我总认为我是最懂野孩子的,因为他们的歌我挨个扒过.</p>
-<p>新的吉他手没有弹最早版本的和弦,也许是那些和弦已经失传,也许这是张佺的最新编排.如果是几年前,我大概会在演出结束后去后台找他们,希望跟着他们走了,激动的跟他们说我给你们弹吉他啊!真是天真啊当年.</p>
-<p>演出结束时有小孩子献花,也许只有在故乡才能碰到这种”待遇”.</p>
+        <hr>
+<a id="more"></a>
+<p>我妈今天打电话说她今年带一年级音乐,但是她不会唱歌(这么坑一年级的小朋友??),所以决定给孩子们放配套教材上带的光盘,但是学校的光盘早丢了让我给她下,发我一网址还都是flash,一二年级上下册,崩溃…我说晚上吧我这会比较忙(我已经做好了一个一个点进去在firefox page info里面慢慢找的打算了).最后想想还是算了写爬虫吧,但是我担心我这水平写完大概也能点完了.</p>
+<p>搜笔记,发现之前的scrapy笔记….我去这是啥啊,看不懂了…只能用笨办法用正则表达式找了.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">base_url = <span class="string">'http://www.pep.com.cn/yinyue/yyjs/yytbjx/2x/yyflash/201009/'</span></span><br><span class="line"><span class="comment">#base_url = 'http://www.pep.com.cn/yinyue/yyjs/yytbjx/1s/yyflash/201008/'</span></span><br><span class="line"><span class="comment">#base_url = 'http://www.pep.com.cn/yinyue/yyjs/yytbjx/1x/yyflash/201009/'</span></span><br><span class="line"><span class="comment">#base_url = 'http://www.pep.com.cn/yinyue/yyjs/yytbjx/2s/yyflash/201009/'</span></span><br><span class="line">suffix_url_lst = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">65</span>, <span class="number">80</span>):</span><br><span class="line">    suffix_url_lst.append(<span class="string">'t20100901_8542'</span> + str(i) + <span class="string">'.htm'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">for</span> suffix_url <span class="keyword">in</span> suffix_url_lst:</span><br><span class="line">    urlhand = urllib.urlopen(base_url + suffix_url)</span><br><span class="line">    text = urlhand.read()</span><br><span class="line">    <span class="keyword">if</span> re.findall(<span class="string">"&lt;title&gt;(.*)&lt;/title&gt;"</span>, text) == [<span class="string">'404 Not Found'</span>]:</span><br><span class="line">        <span class="keyword">print</span> suffix_url + <span class="string">" page not found!"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        songtitle = re.findall(<span class="string">"var title = \'(.*)\'"</span>, text)</span><br><span class="line">        songtitle = songtitle[<span class="number">0</span>].decode(<span class="string">'gbk'</span>)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"song title is "</span> + songtitle</span><br><span class="line">        swftitle = re.findall(<span class="string">"\./(.*?.swf)"</span>, text)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> swftitle == []:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"swf not found!"</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        swftitle = swftitle[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">print</span> swftitle        </span><br><span class="line">        swfurl = base_url + swftitle</span><br><span class="line">        <span class="keyword">print</span> swfurl</span><br><span class="line">        child = subprocess.Popen([<span class="string">'wget'</span>, swfurl, <span class="string">'-O'</span>, songtitle + <span class="string">'.swf'</span>])</span><br></pre></td></tr></table></figure>
+<p>这破网站提供的破资源一会是mp3一会是swf的,有的点进去还什么都没有.</p>
+<p>下载网页再用正则表达式找绝对是最笨的爬虫,不知道我妈看到我用这么蠢的方法会不会哭出来.</p>
 
       
     </div>
@@ -110,7 +110,7 @@
         
   
   <div class="tags">
-    <a href="/tags/演出/">演出</a>
+    <a href="/tags/爬虫/">爬虫</a>
   </div>
 
         
