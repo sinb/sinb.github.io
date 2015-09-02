@@ -94,7 +94,7 @@
 <p>昨晚回去路上看了知乎日报上<a href="http://daily.zhihu.com/story/7078317" target="_blank" rel="external">小时候那种插卡玩的游戏机，原来是这么呈现出来的</a>,才知道原来FC游戏上只用了64种颜色,而且还有几个是重复的.<br>之前我试过做像素化(当时我觉得那种风格叫做像素化),方法很简单,把一张图分成相邻的小方块,只从这个方块里采样一个点,用这个点的RGB作为这个小方块的RGB,这样做出来其实有那么些意思.</p>
 <p><center><img src="/images/nescmap/1.png" width="300px"></center><center><img src="/images/nescmap/3.png" width="300px"></center><center><img src="/images/nescmap/2.png" width="300px"></center></p>
 <p>看了那个文章之后才知道我用的色彩太多了,应该先减少颜色.一查才知道原来MATLAB的colormap就是color palette,MATLAB把使用color palette的图片叫做indexed image,就是每个像素位置存了一个索引,用这个索引在color map里找出对应的RGB.</p>
-<p>第一步是减少颜色. MATLAB可以把普通的RGB图片转换成indexed image,并且可以选择生成的color map的大小,也就是使用颜色的个数.我把RGB转成了有55中颜色的indexed image.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">I = imread(<span class="string">'pixel1.jpg'</span>);</span><br><span class="line"><span class="matrix">[IND,map]</span> = rgb2ind(I,<span class="number">55</span>);</span><br></pre></td></tr></table></figure></p>
+<p>第一步是减少颜色. MATLAB可以把普通的RGB图片转换成indexed image,并且可以选择生成的color map的大小,也就是使用颜色的个数.我把RGB转成了有55种颜色的indexed image.<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">I = imread(<span class="string">'pixel1.jpg'</span>);</span><br><span class="line"><span class="matrix">[IND,map]</span> = rgb2ind(I,<span class="number">55</span>);</span><br></pre></td></tr></table></figure></p>
 <p>转完之后是这个样子.</p>
 <p><center><img src="/images/nescmap/4.png" width="300px"></center></p>
 <p>NES的color map是这样<br><center><img src="/images/nescmap/5.png"></center></p>
@@ -201,8 +201,6 @@ var duoshuoQuery = {short_name:"sinb"};
     <li><a href="/tags/Deep-Learning/">Deep Learning</a><small>2</small></li>
   
     <li><a href="/tags/FC/">FC</a><small>1</small></li>
-  
-    <li><a href="/tags/FC-NES-超级玛丽/">FC, NES, 超级玛丽</a><small>0</small></li>
   
     <li><a href="/tags/HMM/">HMM</a><small>1</small></li>
   
