@@ -6,15 +6,15 @@
 <meta name="baidu-site-verification" content="xdZ6LobkoN" />
   <meta charset="utf-8">
   
-  <title>Dizzy | Amnesia&#39;s blog</title>
+  <title>List和Set里添加元素 | Amnesia&#39;s blog</title>
   <meta name="author" content="Amnesia">
   
-  <meta name="description" content="啥都看不见请换火狐.">
+  <meta name="description" content="">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Dizzy"/>
+  <meta property="og:title" content="List和Set里添加元素"/>
   <meta property="og:site_name" content="Amnesia&#39;s blog"/>
 
   
@@ -100,18 +100,27 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-01-24T04:11:04.000Z"><a href="/Artworks/dizzy/">2015-01-24</a></time>
+        <time datetime="2015-10-07T07:48:28.000Z"><a href="/Whatyouknowabout/set-append/">2015-10-07</a></time>
       
       
   
-    <h1 class="title">Dizzy</h1>
+    <h1 class="title">List和Set里添加元素</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>啥都看不见请换火狐.<br><a id="more"></a></p>
-<center><canvas data-processing-sources="/processingcode/dizzy.pde"></canvas></center><br><center>操作:用鼠标点</center>
+        <hr>
+<a id="more"></a>
+<p>在Python里往List和Set里添加元素有多种方法.</p>
+<h2 id="List">List</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">a</span> = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">##用append</span><br><span class="line"><span class="tag">a</span>.<span class="function"><span class="title">append</span><span class="params">(<span class="number">5</span>)</span></span></span><br><span class="line">##或者用+</span><br><span class="line"><span class="tag">a</span> += [<span class="number">6</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="Set">Set</h2><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">a</span> = <span class="built_in">set</span>([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line"><span class="comment">##用add</span></span><br><span class="line"><span class="operator">a</span>.<span class="built_in">add</span>(<span class="number">5</span>)</span><br><span class="line"><span class="comment">##用或运算符号</span></span><br><span class="line"><span class="operator">a</span> |= &#123;<span class="number">6</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>Set还有个update函数,可以接受多组参数一次添加到set里<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">a</span>.<span class="function"><span class="title">update</span><span class="params">([<span class="number">5</span>,<span class="number">6</span>,<span class="number">3</span>], [-<span class="number">11</span>,<span class="number">11</span>])</span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="一道Leetcode">一道Leetcode</h2><h3 id="Group_Anagrams">Group Anagrams</h3><p><a href="https://leetcode.com/problems/anagrams/" target="_blank" rel="external">https://leetcode.com/problems/anagrams/</a><br>Given an array of strings, group anagrams together.</p>
+<p>For example, given: [“eat”, “tea”, “tan”, “ate”, “nat”, “bat”],<br>Return:</p>
+<p>[<br>  [“ate”, “eat”,”tea”],<br>  [“nat”,”tan”],<br>  [“bat”]<br>]<br>两个词如果是anagrams就把它们转为同一个值.<br>一般有两种转法,比如’tea’和’eat’排序后都可转为’aet’,或者统计字母出现的次数,两个都是((‘a’, 1), (‘e’, 1), (‘t’, 1)),然后再把这个转后的东西作为哈系表的键值key,对应的anagrams list作为value存进去.<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class <span class="type">Solution</span>(<span class="keyword">object</span>):</span><br><span class="line">    def groupAnagrams(self, strs):</span><br><span class="line">        <span class="string">"""</span><br><span class="line">        :type strs: List[str]</span><br><span class="line">        :rtype: List[List[str]]</span><br><span class="line">        """</span></span><br><span class="line">        <span class="literal">result</span> = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> strs:</span><br><span class="line">            hash_key = ''.join(sorted(word))</span><br><span class="line">            <span class="keyword">if</span> hash_key <span class="keyword">in</span> <span class="literal">result</span>:</span><br><span class="line">                <span class="literal">result</span>[hash_key] += [word]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="literal">result</span>[hash_key] = [word]</span><br><span class="line">                </span><br><span class="line">        <span class="keyword">return</span> [<span class="keyword">tuple</span>(sorted(lst)) <span class="keyword">for</span> lst <span class="keyword">in</span> <span class="literal">result</span>.values() ]</span><br></pre></td></tr></table></figure></p>
+<p>参考:<a href="http://sahandsaba.com/interview-question-facebook-anagrams.html" target="_blank" rel="external">http://sahandsaba.com/interview-question-facebook-anagrams.html</a></p>
+
       
     </div>
     <footer>
@@ -119,13 +128,13 @@
         
   
   <div class="categories">
-    <a href="/categories/Artworks/">Artworks</a>
+    <a href="/categories/Whatyouknowabout/">Whatyouknowabout</a>
   </div>
 
         
   
   <div class="tags">
-    <a href="/tags/Processing/">Processing</a>
+    <a href="/tags/Leetcode/">Leetcode</a>, <a href="/tags/Python/">Python</a>
   </div>
 
         
