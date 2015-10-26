@@ -118,9 +118,12 @@
 <p>里面有个有用的函数,im2col_mean_removal,找到一张大图里所有的小片并且去均值,这里的返回应该是75*784,75是一个小片的维度,784=(32-5+1)^2.<br>Stage 1里得到75x40的PCA基.然后是投影.<br>具体做法,对一张32x32x3的大图先补0变成36x36x3,目的是使计算投影后的结果和原图一样大(只不过变成了32x32x1).<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%PCA_output.m</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:NumFilters</span><br><span class="line">        cnt = cnt + <span class="number">1</span>;</span><br><span class="line">        OutImg<span class="cell">&#123;cnt&#125;</span> = <span class="built_in">reshape</span>(V(:,<span class="built_in">j</span>)<span class="operator">'</span>*im,ImgX,ImgY);  <span class="comment">% convolution output</span></span><br><span class="line">    <span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
 <p>这个循环对一张大图,计算了40个PCA的投影.V(:,j)是一个PCA基,im的维度是75x1024,是36x36的图像上所有的5x5x3片,V(:,j)’*im算出了这1024个片(位置)在这个基向量上的投影.<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OutImgIdx = kron<span class="list">(<span class="keyword">InImgIdx</span>,ones<span class="list">(<span class="keyword">NumFilters</span>,<span class="number">1</span>)</span>)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <p>这样一张32x32x3的大图变成了40张32x32的图.OutImgIdx用来记录这个对应关系(从1变40的关系).</p>
-<h3 id="Stage_2">Stage 2</h3><p>经过第一步,1000张32x32x3变成了40000张32x32x1,作为新的输入.Stage 2的PCA取前8个,并且由于现在不是3通道了,所以PCA基算出是25x8.<br>Stage 2计算出的投影就是在做feature extraction.<br>这一步虽然有40000张输入,但应该对应到最初的input layer上去,也就是一次计算40张32x32,这40张对应着一张32x32x5.8个PCA基,所以用PCA_output的输出是320个32x32,都对应与最初的一张输入图像.</p>
-<h2 id="特征计算">特征计算</h2><p>这个特征有点奇怪,用的是binary hashing.8个PCA基有8个权重.<br><figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map_weights = <span class="number">2.</span>^((PCANet.NumFilters(<span class="keyword">end</span>)-<span class="number">1</span>):-<span class="number">1</span>:<span class="number">0</span>); % weights <span class="keyword">for</span> <span class="keyword">binary</span> <span class="keyword">to</span> <span class="built_in">decimal</span> conversion</span><br></pre></td></tr></table></figure></p>
-<p>剩下的还没看完.</p>
+<h3 id="Stage_2">Stage 2</h3><p>经过第一步,1000张32x32x3变成了40000张32x32x1,作为新的输入.Stage 2的PCA取前8个,并且由于现在不是3通道了,所以PCA基算出是25x8.<br>Stage 2计算出的投影就是在做feature extraction.<br>这一步虽然有40000张输入,但应该对应到最初的input layer上去,也就是一次计算40张32x32,这40张对应着一张32x32x3.8个PCA基,所以用PCA_output的输出是320个32x32,都对应与最初的一张输入图像.</p>
+<h2 id="特征计算">特征计算</h2><p>一张图输入经过stage 1的40个基变为40张特征图, 每张特征图经过stage 2的8个基变为8张图片.<br>这8张图片,首先经过Heaviside step变成01图,然后从每个像素位置看,都是一个8位二进制数,这样8张又成了一张,每个像素位置处是一个范围在\([0, 2^8-1]\)的数.于是输出层的图像数又和stage 1的输出一样了.<br>1-&gt;40-&gt;320-&gt;40.</p>
+<p><center><img src="/images/pcan/2.png"></center><br>对输出层的每一张图,把它分成B个blocks,每个blocks里做bins为2^8-1的histogram,然后把这B个blocks的histogram连成一个向量输出.这张图与这个式子对应.</p>
+<p><center><img src="/images/pcan/3.png"></center></p>
+<p><center><img src="/images/pcan/4.png"></center><br>Blocks之间可以重合.<br>比如block大小8,重合50%,步长就是4.32x32的图里共有ceil((32-8+1)/4)^2=49个8x8的block.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stride = round((1-PCANet.BlkOverLapRatio)*PCANet.HistBlockSize); &#10;blkwise_fea = sparse(histc(im2col_general(T,PCANet.HistBlockSize,...&#10;  stride),(0:2^PCANet.NumFilters(end)-1)&#39;));</span><br></pre></td></tr></table></figure></p>
+<p>上面两行做了histogram统计,得到49个256x1的统计向量.这一步再用[4 2 1]的spatial pyramid pooling,变成21x256.40张图连成一个21x256x40的向量,这就是一张图的最终特征了.</p>
 
       
     </div>
@@ -167,14 +170,14 @@ var duoshuoQuery = {short_name:"sinb"};
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="search" name="q" results="0" placeholder="搜尋">
     <input type="hidden" name="q" value="site:sinb.github.io">
   </form>
 </div>
 
   
 <div class="widget tag">
-  <h3 class="title">分类</h3>
+  <h3 class="title">分類</h3>
   <ul class="entry">
   
     <li><a href="/categories/Artworks/">Artworks</a><small>8</small></li>
@@ -191,7 +194,7 @@ var duoshuoQuery = {short_name:"sinb"};
 
   
 <div class="widget tag">
-  <h3 class="title">标签</h3>
+  <h3 class="title">標籤</h3>
   <ul class="entry">
   
     <li><a href="/tags/8bit/">8bit</a><small>1</small></li>
